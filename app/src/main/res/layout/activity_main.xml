@@ -1,18 +1,84 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/currentPlayerText"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="Joueur actuel: "
+        android:textSize="18sp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <EditText
+            android:id="@+id/dice1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Dé 1"
+            android:inputType="number"
+            android:maxLength="1" />
+
+        <EditText
+            android:id="@+id/dice2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Dé 2"
+            android:inputType="number"
+            android:maxLength="1" />
+
+        <EditText
+            android:id="@+id/dice3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Dé 3"
+            android:inputType="number"
+            android:maxLength="1" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/validateScoreButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Valider le score"
+        android:enabled="false" />
+
+    <TextView
+        android:id="@+id/figureText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Figure réalisée: Aucune"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/resultText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Score: 0"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/teamsScoreText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Scores des équipes:"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/nextTurnButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tour suivant"
+        android:enabled="false" />
+</LinearLayout>

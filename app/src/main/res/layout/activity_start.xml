@@ -1,0 +1,66 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".StartActivity">
+
+    <EditText
+        android:id="@+id/playerNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nom du joueur" />
+
+    <Button
+        android:id="@+id/addPlayerButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ajouter un joueur" />
+
+    <ListView
+        android:id="@+id/playersListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <ToggleButton
+        android:id="@+id/teamToggleButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textOn="Jouer en équipe"
+        android:textOff="Jouer en équipe"
+        android:checked="false" />
+
+    <LinearLayout
+        android:id="@+id/teamsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/teamNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nom de l'équipe" />
+
+        <Button
+            android:id="@+id/addTeamButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ajouter une équipe" />
+
+        <ListView
+            android:id="@+id/teamsListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/startGameButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Commencer la partie"
+        android:enabled="false" />
+</LinearLayout>
