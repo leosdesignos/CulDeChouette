@@ -6,12 +6,26 @@
     android:padding="16dp"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/currentPlayerText"
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Joueur actuel: "
-        android:textSize="18sp" />
+        android:orientation="horizontal"
+        android:gravity="left">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Joueur actuel : "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/currentPlayerText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="18sp" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,29 +65,55 @@
         android:id="@+id/validateScoreButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Valider le score"
+        android:text="Valider le jet"
         android:enabled="false" />
 
-    <TextView
-        android:id="@+id/figureText"
+    <Button
+        android:id="@+id/siroterButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Figure réalisée: Aucune"
-        android:textSize="18sp" />
+        android:text="Siroter"
+        android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/resultText"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Score: 0"
-        android:textSize="18sp" />
+        android:orientation="horizontal"
+        android:gravity="left">
 
-    <TextView
-        android:id="@+id/teamsScoreText"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Figure : "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/figureText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Aucune"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Scores des équipes:"
-        android:textSize="18sp" />
+        android:orientation="horizontal"
+        android:gravity="left">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Score : "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/resultText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="18sp" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/nextTurnButton"
@@ -81,4 +121,17 @@
         android:layout_height="wrap_content"
         android:text="Tour suivant"
         android:enabled="false" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Scores des joueurs : "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/teamsScoreText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="18sp" />
 </LinearLayout>

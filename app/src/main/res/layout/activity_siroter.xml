@@ -1,0 +1,50 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".SiroterActivity">
+
+    <TextView
+        android:id="@+id/siroterTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Siroter"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/siroterMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Choisissez les équipes qui peuvent parier:"
+        android:textSize="18sp" />
+
+    <ListView
+        android:id="@+id/teamsListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/siroterEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Valeur du dé"
+        android:inputType="number"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/siroterButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Valider les paris"
+        android:enabled="true" />
+
+    <Button
+        android:id="@+id/validateScoreButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Valider le score"
+        android:visibility="gone" />
+</LinearLayout>

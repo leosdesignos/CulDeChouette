@@ -12,7 +12,9 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +25,7 @@ public class StartActivity extends AppCompatActivity {
     private ListView playersListView;
     private PlayersAdapter playersAdapter;
     private ArrayList<String> playersList;
-    private Map<String, String> teamNames;
+    private Map<String, String> playerTeam;
     private Button startGameButton;
     private ToggleButton teamToggleButton;
     private View teamsLayout;
@@ -48,7 +50,7 @@ public class StartActivity extends AppCompatActivity {
         Button addTeamButton = findViewById(R.id.addTeamButton);
 
         playersList = new ArrayList<>();
-        teamNames = new HashMap<>();
+        playerTeam = new HashMap<>();
         playersAdapter = new PlayersAdapter(playersList);
         playersListView.setAdapter(playersAdapter);
 
@@ -56,12 +58,7 @@ public class StartActivity extends AppCompatActivity {
         teamsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, teamsList);
         teamsListView.setAdapter(teamsAdapter);
 
-        addPlayerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addPlayer();
-            }
-        });
+        addPlayerButton.setOnClickListener(v -> addPlayer());
 
         teamToggleButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -73,26 +70,16 @@ public class StartActivity extends AppCompatActivity {
             }
         });
 
-        addTeamButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addTeam();
-            }
-        });
+        addTeamButton.setOnClickListener(v -> addTeam());
 
-        startGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startGame();
-            }
-        });
+        startGameButton.setOnClickListener(v -> startGame());
     }
 
     private void addPlayer() {
         String playerName = playerNameEditText.getText().toString();
         if (!playerName.isEmpty()) {
             playersList.add(playerName);
-            teamNames.put(playerName, playerName); // Par défaut, le nom de l'équipe est le nom du joueur
+            playerTeam.put(playerName, playerName); // Par défaut, le nom de l'équipe est le nom du joueur
             playersAdapter.notifyDataSetChanged();
             playerNameEditText.setText("");
             checkStartGameButton();
@@ -114,14 +101,14 @@ public class StartActivity extends AppCompatActivity {
             String playerName = entry.getKey();
             Spinner spinner = entry.getValue();
             String selectedTeam = (String) spinner.getSelectedItem();
-            if (!"Aucune équipe".equals(selectedTeam)) {
-                teamNames.put(playerName, selectedTeam);
+            if (!selectedTeam.equals(getString(R.string.no_team))) {
+                playerTeam.put(playerName, selectedTeam);
             }
         }
 
         Intent intent = new Intent(this, MainActivity.class);
         intent.putStringArrayListExtra("playersList", playersList);
-        intent.putExtra("teamNames", (HashMap<String, String>) teamNames);
+        intent.putExtra("playerTeam", (HashMap<String, String>) playerTeam);
         startActivity(intent);
     }
 
@@ -130,7 +117,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private class PlayersAdapter extends ArrayAdapter<String> {
-        private Map<String, Spinner> playerSpinners;
+        private final Map<String, Spinner> playerSpinners;
 
         public PlayersAdapter(ArrayList<String> playersList) {
             super(StartActivity.this, R.layout.player_item, playersList);
@@ -152,7 +139,7 @@ public class StartActivity extends AppCompatActivity {
             // Ajouter une option par défaut si la liste des équipes est vide
             ArrayList<String> spinnerItems = new ArrayList<>(teamsList);
             if (spinnerItems.isEmpty()) {
-                spinnerItems.add("Aucune équipe");
+                spinnerItems.add(getString(R.string.no_team));
             }
 
             ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, spinnerItems);
@@ -181,9 +168,6 @@ public class StartActivity extends AppCompatActivity {
                 ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinner.getAdapter();
                 adapter.clear();
                 adapter.addAll(teamsList);
-                if (adapter.getCount() == 0) {
-                    adapter.add("Aucune équipe");
-                }
                 adapter.notifyDataSetChanged();
             }
         }

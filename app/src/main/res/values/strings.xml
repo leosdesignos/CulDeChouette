@@ -1,6 +1,13 @@
 <resources>
-    <string name="app_name">CulDeChouette</string>
-    <string name="label_joueur">Joueur actuel : </string>
-    <string name="label_score_equipe">Score de l\'équipe : </string>
-    <string name="label_score">Score : </string>
+    <string name="app_name">Cul de Chouette</string>
+    <string name="no_team">Aucune équipe</string>
+    <string-array name="dice_options">
+        <item>Aucun</item>
+        <item>Linotte</item>
+        <item>Alouette</item>
+        <item>Fauvette</item>
+        <item>Mouette</item>
+        <item>Bergeronnette</item>
+        <item>Chouette</item>
+    </string-array>
 </resources>
