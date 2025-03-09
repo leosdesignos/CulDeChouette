@@ -24,38 +24,12 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <ToggleButton
-        android:id="@+id/teamToggleButton"
+    <Button
+        android:id="@+id/doubletteButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textOn="Jouer en équipe"
-        android:textOff="Jouer en équipe"
+        android:text="Jouer en doublette"
         android:checked="false" />
-
-    <LinearLayout
-        android:id="@+id/teamsLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <EditText
-            android:id="@+id/teamNameEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nom de l'équipe" />
-
-        <Button
-            android:id="@+id/addTeamButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Ajouter une équipe" />
-
-        <ListView
-            android:id="@+id/teamsListView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
 
     <Button
         android:id="@+id/startGameButton"

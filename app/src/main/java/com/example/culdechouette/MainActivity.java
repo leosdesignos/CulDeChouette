@@ -1,19 +1,29 @@
 package com.example.culdechouette;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,15 +33,34 @@ public class MainActivity extends AppCompatActivity {
     private EditText dice3EditText;
     private TextView resultText;
     private TextView figureText;
-    private TextView teamsScoreText;
+    private TextView playersScoreText;
     private Button validateScoreButton;
     private Button siroterButton;
     private Button nextTurnButton;
 
-    private ArrayList<String> playersList;
-    private Map<String, Integer> teamScores;
-    private Map<String, String> playerTeam;
     private int currentPlayerIndex = -1;
+    private ArrayList<Player> playerList = new ArrayList<>();
+    private HashMap<String, Integer> roundScore = new HashMap<>();
+    private Roll roll;
+
+    ActivityResultLauncher<Intent> subActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent intent = result.getData();
+                        int id = intent.getIntExtra("id", -1);
+                        if (id == SiroterActivity.SUBACT_ID) {
+                            siroterButton.setEnabled(false);
+                            roundScore = (HashMap<String, Integer>) intent.getSerializableExtra("roundScore");
+                            if (intent.getBooleanExtra("civet", false)) {
+                                playerList.get(currentPlayerIndex).setCivet(true);
+                            }
+                        }
+                    }
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,21 +73,14 @@ public class MainActivity extends AppCompatActivity {
         dice3EditText = findViewById(R.id.dice3);
         resultText = findViewById(R.id.resultText);
         figureText = findViewById(R.id.figureText);
-        teamsScoreText = findViewById(R.id.teamsScoreText);
+        playersScoreText = findViewById(R.id.playersScoreText);
         validateScoreButton = findViewById(R.id.validateScoreButton);
         siroterButton = findViewById(R.id.siroterButton);
         nextTurnButton = findViewById(R.id.nextTurnButton);
 
-        playersList = getIntent().getStringArrayListExtra("playersList");
-        playerTeam = (HashMap<String, String>) getIntent().getSerializableExtra("playerTeam");
-        teamScores = new HashMap<>();
-
-        // Initialiser les scores des équipes à 0
-        for (String player : playersList) {
-            String teamName = playerTeam.get(player);
-            if (!teamScores.containsKey(teamName)) {
-                teamScores.put(teamName, 0);
-            }
+        ArrayList<String> playerNames = getIntent().getStringArrayListExtra("playerNameList");
+        for (String name : playerNames) {
+            playerList.add(new Player(name));
         }
 
         validateScoreButton.setOnClickListener(v -> validateScore());
@@ -70,25 +92,53 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void validateScore() {
+        if (!checkDiceFields()) {
+            Toast.makeText(getApplicationContext(), "Dés non valides", Toast.LENGTH_SHORT).show();
+            return;
+        }
         int dice1 = Integer.parseInt(dice1EditText.getText().toString());
         int dice2 = Integer.parseInt(dice2EditText.getText().toString());
         int dice3 = Integer.parseInt(dice3EditText.getText().toString());
 
-        ScoreResult result = calculateScoreAndGetFigureName(dice1, dice2, dice3);
-        resultText.setText(String.valueOf(result.score));
-        figureText.setText(result.figureName);
+        roll = Roll.roll(dice1, dice2, dice3);
+        figureText.setText(roll.figureName());
+        resultText.setText(String.valueOf(roll.figureScore()));
 
-        if (result.figureName.startsWith("Chouette de")) {
-            siroterButton.setVisibility(View.VISIBLE);
+        Player currentPlayer = playerList.get(currentPlayerIndex);
+        switch (roll.figure()) {
+            case CHOUETTE:
+                roundScore.put(currentPlayer.name(), roll.figureScore());
+                siroterButton.setVisibility(View.VISIBLE);
+                break;
+            case CHOUETTE_VELUTE:
+                // TODO pts to first pas mou le caillou
+                break;
+            case CUL_DE_CHOUETTE:
+            case CUL_DE_CHOUETTE_SIROTE:
+            case VELUTE:
+                roundScore.put(currentPlayer.name(), roll.figureScore());
+                break;
+            case SUITE_VELUTE:
+                roundScore.put(currentPlayer.name(), roll.figureScore());
+            case SUITE:
+                // TODO pts to last grelotte ca picotte
+                break;
+            case SOUFLETTE:
+                break;
+            case NEANT:
+                currentPlayer.setGrelottine(true);
+                break;
+            default:
+                break;
         }
 
         nextTurnButton.setEnabled(true);
-        validateScoreButton.setEnabled(false);
+//        validateScoreButton.setEnabled(false);
     }
 
     private void nextTurn() {
         updatePlayer();
-        updateTeamsScore();
+        updatePlayersScore();
 
         // Réinitialiser les champs de dés et le score
         dice1EditText.setText("");
@@ -96,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         dice3EditText.setText("");
         resultText.setText("0");
         figureText.setText("Aucune");
-        validateScoreButton.setEnabled(false);
+//        validateScoreButton.setEnabled(false);
         nextTurnButton.setEnabled(false);
         siroterButton.setVisibility(View.GONE);
 
@@ -106,112 +156,50 @@ public class MainActivity extends AppCompatActivity {
 
     private void updatePlayer() {
         currentPlayerIndex++;
-        if (currentPlayerIndex >= playersList.size()) {
+        if (currentPlayerIndex >= playerList.size()) {
             currentPlayerIndex = 0;
         }
-        currentPlayerText.setText(playersList.get(currentPlayerIndex));
+        currentPlayerText.setText(playerList.get(currentPlayerIndex).name());
     }
 
-    private void updateTeamsScore() {
-        String currentPlayer = playersList.get(currentPlayerIndex);
-        String currentTeam = playerTeam.get(currentPlayer);
-        int currentTeamScore = teamScores.get(currentTeam);
-//        teamScores.put(currentTeam, currentTeamScore + result.score); // TODO cumulate score
-
+    private void updatePlayersScore() {
         StringBuilder scoresText = new StringBuilder("");
-        for (Map.Entry<String, Integer> entry : teamScores.entrySet()) {
-            scoresText.append(entry.getKey()).append(" : ").append(entry.getValue()).append("\n");
-        }
-        teamsScoreText.setText(scoresText.toString());
-    }
-
-    private ScoreResult calculateScoreAndGetFigureName(int dice1, int dice2, int dice3) {
-        // Trier les dés pour simplifier les comparaisons
-        int[] dice = {dice1, dice2, dice3};
-        Arrays.sort(dice);
-
-        // Vérifier Cul de Chouette
-        if (dice[0] == dice[1] && dice[1] == dice[2]) {
-            int value = dice[0];
-            return new ScoreResult(40 + dice[0] * 10, "Cul de Chouette de " + value);
-        }
-
-        // Vérifier Chouette Velute
-        if (dice[0] == dice[1] && dice[0] + dice[1] == dice[2]) {
-            return new ScoreResult(2 * dice[2] * dice[2], "Chouette Velute de " + dice[2]);
-        }
-
-        // Vérifier Chouette
-        if (dice[0] == dice[1] || dice[1] == dice[2]) {
-            return new ScoreResult(dice[1] * dice[1], "Chouette de " + dice[1]);
-        }
-
-        // Vérifier Velute
-        if (dice[0] + dice[1] == dice[2]) {
-            return new ScoreResult(2 * dice[2] * dice[2], "Velute de " + dice[2]);
-        }
-
-        // Vérifier Suite
-        if (dice[2] == dice[1] + 1 && dice[1] == dice[0] + 1) {
-            if (dice[0] == 1 && dice[1] == 2 && dice[2] == 3) {
-                return new ScoreResult(18, "Suite Velute");
+        for (Player player : playerList) {
+            if (roundScore.containsKey(player.name())){
+                player.addScore(roundScore.get(player.name()));
             }
-            return new ScoreResult(-10, "Suite");
+            scoresText.append(player.name()).append(" : ").append(player.score()).append("\n");
         }
+        playersScoreText.setText(scoresText.toString());
 
-        // Vérifier Soufflette
-        if (dice[0] == 1 && dice[1] == 2 && dice[2] == 4) {
-            return new ScoreResult(0, "Soufflette");
-        }
-
-        // Si aucune combinaison, c'est un Néant
-        return new ScoreResult(0, "Néant");
+        roundScore.clear();
     }
 
     private void showSiroterPopup() {
         Intent intent = new Intent(this, SiroterActivity.class);
-        intent.putExtra("currentPlayer", playersList.get(currentPlayerIndex));
-        intent.putExtra("currentTeam", playerTeam.get(playersList.get(currentPlayerIndex)));
-        intent.putExtra("playersList", playersList);
-        intent.putExtra("playerTeam", (HashMap<String, String>) playerTeam);
-        intent.putExtra("teamScores", (HashMap<String, Integer>) teamScores);
-        startActivityForResult(intent, 1);
+        intent.putExtra("currentPlayerIndex", currentPlayerIndex);
+        intent.putExtra("playerList", playerList);
+        intent.putExtra("chouetteValue", roll.figureValue());
+        intent.putExtra("roundScore", (HashMap<String, Integer>) roundScore);
+        subActivity.launch(intent);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            int siroterResult = data.getIntExtra("siroterResult", 0);
-            String currentPlayer = playersList.get(currentPlayerIndex);
-            String currentTeam = playerTeam.get(currentPlayer);
-            int currentTeamScore = teamScores.get(currentTeam);
 
-            if (siroterResult > 0) {
-                teamScores.put(currentTeam, currentTeamScore + siroterResult);
-            } else {
-                teamScores.put(currentTeam, currentTeamScore + siroterResult);
-            }
-
-            // TODO
-        }
-    }
 
     private void setupDiceEditTexts() {
-        dice1EditText.addTextChangedListener(new DiceTextWatcher(dice1EditText, dice2EditText));
-        dice2EditText.addTextChangedListener(new DiceTextWatcher(dice2EditText, dice3EditText));
-        dice3EditText.addTextChangedListener(new DiceTextWatcher(dice3EditText, null));
+//        dice1EditText.addTextChangedListener(new DiceTextWatcher(dice1EditText, dice2EditText));
+//        dice2EditText.addTextChangedListener(new DiceTextWatcher(dice2EditText, dice3EditText));
+//        dice3EditText.addTextChangedListener(new DiceTextWatcher(dice3EditText, null));
 
-//        dice1EditText.setOnKeyListener(new DiceKeyListener(dice2EditText));
-//        dice2EditText.setOnKeyListener(new DiceKeyListener(dice3EditText));
-//        dice3EditText.setOnKeyListener(new DiceKeyListener(null));
+        dice1EditText.setOnKeyListener(new DiceKeyListener(dice2EditText));
+        dice2EditText.setOnKeyListener(new DiceKeyListener(dice3EditText));
+        dice3EditText.setOnKeyListener(new DiceKeyListener(null));
     }
 
-    private void checkValidateButtonStatus() {
-        boolean isValid = !dice1EditText.getText().toString().isEmpty() &&
+    private boolean checkDiceFields() {
+        return !dice1EditText.getText().toString().isEmpty() &&
                 !dice2EditText.getText().toString().isEmpty() &&
                 !dice3EditText.getText().toString().isEmpty();
-        validateScoreButton.setEnabled(isValid);
     }
 
     private void showKeyboard(View view) {
@@ -226,68 +214,34 @@ public class MainActivity extends AppCompatActivity {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    private static class ScoreResult {
-        int score;
-        String figureName;
+    private class DiceKeyListener implements View.OnKeyListener {
 
-        ScoreResult(int score, String figureName) {
-            this.score = score;
-            this.figureName = figureName;
-        }
-    }
-
-    private class DiceTextWatcher implements TextWatcher {
-        private EditText currentEditText;
         private EditText nextEditText;
+        private Set<Integer> allowedKeys = new HashSet<>(Arrays.asList(
+                KeyEvent.KEYCODE_1, KeyEvent.KEYCODE_2, KeyEvent.KEYCODE_3,
+                KeyEvent.KEYCODE_4, KeyEvent.KEYCODE_5, KeyEvent.KEYCODE_6
+        ));
 
-        public DiceTextWatcher(EditText currentEditText, EditText nextEditText) {
-            this.currentEditText = currentEditText;
+        public DiceKeyListener(EditText nextEditText) {
             this.nextEditText = nextEditText;
         }
 
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (s.length() == 1) {
-                int value = Integer.parseInt(s.toString());
-                if (value >= 1 && value <= 6) {
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                if (!allowedKeys.contains(keyCode) && keyCode != KeyEvent.KEYCODE_DEL) {
+                    return true;
+                }
+                if (keyCode != KeyEvent.KEYCODE_DEL) {
                     if (nextEditText != null) {
                         nextEditText.requestFocus();
                     } else {
-                        hideKeyboard(currentEditText);
+                        hideKeyboard(v);
                     }
-                } else {
-                    currentEditText.setText("");
                 }
             }
-            checkValidateButtonStatus();
+            return false;
         }
-
-        @Override
-        public void afterTextChanged(Editable s) {}
     }
-
-//    private class DiceKeyListener implements View.OnKeyListener {
-//        private EditText nextEditText;
-//
-//        public DiceKeyListener(EditText nextEditText) {
-//            this.nextEditText = nextEditText;
-//        }
-//
-//        @Override
-//        public boolean onKey(View v, int keyCode, KeyEvent event) {
-//            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-//                if (nextEditText != null) {
-//                    nextEditText.requestFocus();
-//                } else {
-//                    hideKeyboard(v);
-//                }
-//                return true;
-//            }
-//            return false;
-//        }
-//    }
 
 }

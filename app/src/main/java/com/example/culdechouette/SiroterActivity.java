@@ -17,20 +17,20 @@ import java.util.Map;
 
 public class SiroterActivity extends AppCompatActivity {
 
+    public static final int SUBACT_ID = 0;
+
     private TextView siroterTitle;
     private TextView siroterMessage;
-    private ListView teamsListView;
-    private EditText siroterEditText;
-    private Button siroterButton;
+    private ListView playersListView;
+    private EditText diceEditText;
+    private Button validateBetButton;
     private Button validateScoreButton;
 
-    private String currentPlayer;
-    private String currentTeam;
-    private ArrayList<String> playersList;
-    private Map<String, String> playerTeam;
-    private Map<String, Integer> teamScores;
-    private Map<String, Boolean> teamCanBet;
-    private Map<String, Spinner> teamSpinners;
+    private int chouetteValue;
+    private int currentPlayerIndex;
+    private ArrayList<Player> playerList;
+    private Map<String, Integer> roundScore;
+    private Map<String, Spinner> playerSpinners;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,137 +39,100 @@ public class SiroterActivity extends AppCompatActivity {
 
         siroterTitle = findViewById(R.id.siroterTitle);
         siroterMessage = findViewById(R.id.siroterMessage);
-        teamsListView = findViewById(R.id.teamsListView);
-        siroterEditText = findViewById(R.id.siroterEditText);
-        siroterButton = findViewById(R.id.siroterButton);
+        playersListView = findViewById(R.id.playersListView);
+        diceEditText = findViewById(R.id.diceEditText);
+        validateBetButton = findViewById(R.id.validateBetButton);
         validateScoreButton = findViewById(R.id.validateScoreButton);
 
         // Récupérer les données passées à l'activité
-        currentPlayer = getIntent().getStringExtra("currentPlayer");
-        currentTeam = getIntent().getStringExtra("currentTeam");
-        playersList = getIntent().getStringArrayListExtra("playersList");
-        playerTeam = (HashMap<String, String>) getIntent().getSerializableExtra("playerTeam");
-        teamScores = (HashMap<String, Integer>) getIntent().getSerializableExtra("teamScores");
+        chouetteValue = getIntent().getIntExtra("chouetteValue", -1);
+        currentPlayerIndex = getIntent().getIntExtra("currentPlayerIndex", -1);
+        playerList = (ArrayList<Player>) getIntent().getSerializableExtra("playerList");
+        roundScore = (HashMap<String, Integer>) getIntent().getSerializableExtra("roundScore");
 
-        // Initialiser la liste des équipes qui peuvent parier
-        teamCanBet = new HashMap<>();
-        teamSpinners = new HashMap<>();
-        for (String player : playersList) {
-            String teamName = playerTeam.get(player);
-            teamCanBet.put(teamName, true);
-        }
+        playerSpinners = new HashMap<>();
 
-        // Configurer l'adapter pour la liste des équipes
-        TeamsAdapter adapter = new TeamsAdapter(playersList, playerTeam);
-        teamsListView.setAdapter(adapter);
+        PlayersAdapter adapter = new PlayersAdapter(playerList);
+        playersListView.setAdapter(adapter);
 
-        siroterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                validateBets();
-            }
-        });
-
-        validateScoreButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                validateScore();
-            }
-        });
+        validateBetButton.setOnClickListener(v -> validateBets());
+        validateScoreButton.setOnClickListener(v -> validateScore());
     }
 
     private void validateBets() {
-        // Récupérer les équipes sélectionnées
-        for (Map.Entry<String, Spinner> entry : teamSpinners.entrySet()) {
-            String teamName = entry.getKey();
-            Spinner spinner = entry.getValue();
-            String selectedOption = (String) spinner.getSelectedItem();
-            int betValue = 0;
-
-            switch (selectedOption) {
-                case "Linotte (1)":
-                    betValue = 1;
-                    break;
-                case "Alouette (2)":
-                    betValue = 4;
-                    break;
-                case "Fauvette (3)":
-                    betValue = 9;
-                    break;
-                case "Mouette (4)":
-                    betValue = 16;
-                    break;
-                case "Bergeronnette (5)":
-                    betValue = 25;
-                    break;
-                case "Chouette (6)":
-                    betValue = 36;
-                    break;
-                case "Ne pari pas":
-                    betValue = 0;
-                    break;
-            }
-
-            teamCanBet.put(teamName, betValue != 0);
-        }
-
-        // Afficher le champ de saisie du dé et activer le bouton de validation
-        siroterEditText.setVisibility(View.VISIBLE);
+        validateBetButton.setEnabled(false);
+        diceEditText.setVisibility(View.VISIBLE);
         validateScoreButton.setVisibility(View.VISIBLE);
-        siroterButton.setEnabled(false);
     }
 
     private void validateScore() {
-        int betValue = Integer.parseInt(siroterEditText.getText().toString());
-        int scoreResult = 0;
+        int diceValue = Integer.parseInt(diceEditText.getText().toString());
 
-        // Vérifier si le dé est égal aux deux autres dés de la chouette obtenue par l’équipe qui veut siroter
-        for (Map.Entry<String, Boolean> entry : teamCanBet.entrySet()) {
-            String teamName = entry.getKey();
-            if (entry.getValue()) {
-                if (betValue == 1 || betValue == 6) {
-                    scoreResult += betValue * betValue;
+        boolean civet = false;
+        Player currentPlayer = playerList.get(currentPlayerIndex);
+        for (Player player : playerList) {
+            int score = 0;
+            if (roundScore.containsKey(player.name())) {
+                score = roundScore.get(player.name());
+            }
+
+            if (player.equals(currentPlayer)) {
+                if (diceValue == chouetteValue) {
+                    score = Roll.roll(chouetteValue, chouetteValue, chouetteValue).figureScore();
                 } else {
-                    scoreResult -= betValue;
+                    score = -score;
+                    if (chouetteValue == 6) {
+                        civet = true;
+                    }
                 }
             }
+
+            int bet = playerSpinners.get(player.name()).getSelectedItemPosition();
+            if (bet != 0) {
+                score -= 5;
+                if (bet == diceValue) {
+                    score += 30;
+                }
+            }
+            roundScore.put(player.name(), score);
         }
 
         Intent resultIntent = new Intent();
-        resultIntent.putExtra("siroterResult", scoreResult);
+        resultIntent.putExtra("id", SUBACT_ID);
+        resultIntent.putExtra("civet", civet);
+        resultIntent.putExtra("roundScore", (HashMap<String, Integer>) roundScore);
         setResult(RESULT_OK, resultIntent);
         finish();
     }
 
-    private class TeamsAdapter extends ArrayAdapter<String> {
-        private ArrayList<String> playersList;
-        private Map<String, String> playerTeam;
 
-        public TeamsAdapter(ArrayList<String> playersList, Map<String, String> playerTeam) {
-            super(SiroterActivity.this, R.layout.team_item, playersList);
+
+    private class PlayersAdapter extends ArrayAdapter<Player> {
+        private ArrayList<Player> playersList;
+
+        public PlayersAdapter(ArrayList<Player> playersList) {
+            super(SiroterActivity.this, R.layout.player_item, playersList);
             this.playersList = playersList;
-            this.playerTeam = playerTeam;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
-                convertView = getLayoutInflater().inflate(R.layout.team_item, parent, false);
+                convertView = getLayoutInflater().inflate(R.layout.player_item, parent, false);
             }
 
-            TextView teamNameTextView = convertView.findViewById(R.id.teamNameTextView);
-            Spinner siroterSpinner = convertView.findViewById(R.id.siroterSpinner);
+            TextView playerNameTextView = convertView.findViewById(R.id.playerNameTextView);
+            Spinner choiceSpinner = convertView.findViewById(R.id.choiceSpinner);
 
-            String playerName = getItem(position);
-            String teamName = playerTeam.get(playerName);
-            teamNameTextView.setText(teamName);
+            Player player = getItem(position);
+            playerNameTextView.setText(player.name());
 
             ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(getContext(),
                     R.array.dice_options, android.R.layout.simple_spinner_item);
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            siroterSpinner.setAdapter(spinnerAdapter);
+            choiceSpinner.setAdapter(spinnerAdapter);
 
-            teamSpinners.put(teamName, siroterSpinner);
+            playerSpinners.put(player.name(), choiceSpinner);
 
             return convertView;
         }
