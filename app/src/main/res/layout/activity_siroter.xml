@@ -33,12 +33,11 @@
         android:text="Valider les paris"
         android:enabled="true" />
 
-    <EditText
+    <com.example.culdechouette.DiceEditText
         android:id="@+id/diceEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Valeur du dé"
-        android:inputType="number"
         android:visibility="gone" />
 
     <Button

@@ -10,6 +10,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +24,7 @@ public class SiroterActivity extends AppCompatActivity {
     private TextView siroterTitle;
     private TextView siroterMessage;
     private ListView playersListView;
-    private EditText diceEditText;
+    private DiceEditText diceEditText;
     private Button validateBetButton;
     private Button validateScoreButton;
 
@@ -66,7 +68,11 @@ public class SiroterActivity extends AppCompatActivity {
     }
 
     private void validateScore() {
-        int diceValue = Integer.parseInt(diceEditText.getText().toString());
+        if (diceEditText.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Dé non valide", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        int diceValue = diceEditText.value();
 
         boolean civet = false;
         Player currentPlayer = playerList.get(currentPlayerIndex);

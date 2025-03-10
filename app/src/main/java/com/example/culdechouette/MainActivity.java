@@ -28,9 +28,9 @@ import java.util.Set;
 public class MainActivity extends AppCompatActivity {
 
     private TextView currentPlayerText;
-    private EditText dice1EditText;
-    private EditText dice2EditText;
-    private EditText dice3EditText;
+    private DiceEditText dice1EditText;
+    private DiceEditText dice2EditText;
+    private DiceEditText dice3EditText;
     private TextView resultText;
     private TextView figureText;
     private TextView playersScoreText;
@@ -78,6 +78,9 @@ public class MainActivity extends AppCompatActivity {
         siroterButton = findViewById(R.id.siroterButton);
         nextTurnButton = findViewById(R.id.nextTurnButton);
 
+        dice1EditText.jumpTo(dice2EditText);
+        dice2EditText.jumpTo(dice3EditText);
+
         ArrayList<String> playerNames = getIntent().getStringArrayListExtra("playerNameList");
         for (String name : playerNames) {
             playerList.add(new Player(name));
@@ -87,18 +90,17 @@ public class MainActivity extends AppCompatActivity {
         siroterButton.setOnClickListener(v -> showSiroterPopup());
         nextTurnButton.setOnClickListener(v -> nextTurn());
 
-        setupDiceEditTexts();
         updatePlayer();
     }
 
     private void validateScore() {
-        if (!checkDiceFields()) {
+        if (dice1EditText.isEmpty() || dice2EditText.isEmpty() || dice3EditText.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Dés non valides", Toast.LENGTH_SHORT).show();
             return;
         }
-        int dice1 = Integer.parseInt(dice1EditText.getText().toString());
-        int dice2 = Integer.parseInt(dice2EditText.getText().toString());
-        int dice3 = Integer.parseInt(dice3EditText.getText().toString());
+        int dice1 = dice1EditText.value();
+        int dice2 = dice2EditText.value();
+        int dice3 = dice3EditText.value();
 
         roll = Roll.roll(dice1, dice2, dice3);
         figureText.setText(roll.figureName());
@@ -150,8 +152,7 @@ public class MainActivity extends AppCompatActivity {
         nextTurnButton.setEnabled(false);
         siroterButton.setVisibility(View.GONE);
 
-        dice1EditText.requestFocus();
-        showKeyboard(dice1EditText);
+        dice1EditText.focus();
     }
 
     private void updatePlayer() {
@@ -182,66 +183,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("chouetteValue", roll.figureValue());
         intent.putExtra("roundScore", (HashMap<String, Integer>) roundScore);
         subActivity.launch(intent);
-    }
-
-
-
-    private void setupDiceEditTexts() {
-//        dice1EditText.addTextChangedListener(new DiceTextWatcher(dice1EditText, dice2EditText));
-//        dice2EditText.addTextChangedListener(new DiceTextWatcher(dice2EditText, dice3EditText));
-//        dice3EditText.addTextChangedListener(new DiceTextWatcher(dice3EditText, null));
-
-        dice1EditText.setOnKeyListener(new DiceKeyListener(dice2EditText));
-        dice2EditText.setOnKeyListener(new DiceKeyListener(dice3EditText));
-        dice3EditText.setOnKeyListener(new DiceKeyListener(null));
-    }
-
-    private boolean checkDiceFields() {
-        return !dice1EditText.getText().toString().isEmpty() &&
-                !dice2EditText.getText().toString().isEmpty() &&
-                !dice3EditText.getText().toString().isEmpty();
-    }
-
-    private void showKeyboard(View view) {
-        if (view.requestFocus()) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
-        }
-    }
-
-    private void hideKeyboard(View view) {
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-
-    private class DiceKeyListener implements View.OnKeyListener {
-
-        private EditText nextEditText;
-        private Set<Integer> allowedKeys = new HashSet<>(Arrays.asList(
-                KeyEvent.KEYCODE_1, KeyEvent.KEYCODE_2, KeyEvent.KEYCODE_3,
-                KeyEvent.KEYCODE_4, KeyEvent.KEYCODE_5, KeyEvent.KEYCODE_6
-        ));
-
-        public DiceKeyListener(EditText nextEditText) {
-            this.nextEditText = nextEditText;
-        }
-
-        @Override
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-            if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                if (!allowedKeys.contains(keyCode) && keyCode != KeyEvent.KEYCODE_DEL) {
-                    return true;
-                }
-                if (keyCode != KeyEvent.KEYCODE_DEL) {
-                    if (nextEditText != null) {
-                        nextEditText.requestFocus();
-                    } else {
-                        hideKeyboard(v);
-                    }
-                }
-            }
-            return false;
-        }
     }
 
 }

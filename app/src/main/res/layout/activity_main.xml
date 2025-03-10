@@ -33,32 +33,26 @@
         android:orientation="horizontal"
         android:gravity="center">
 
-        <EditText
+        <com.example.culdechouette.DiceEditText
             android:id="@+id/dice1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Dé 1"
-            android:inputType="number"
-            android:maxLength="1" />
+            android:hint="Dé 1" />
 
-        <EditText
+        <com.example.culdechouette.DiceEditText
             android:id="@+id/dice2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Dé 2"
-            android:inputType="number"
-            android:maxLength="1" />
+            android:hint="Dé 2" />
 
-        <EditText
+        <com.example.culdechouette.DiceEditText
             android:id="@+id/dice3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Dé 3"
-            android:inputType="number"
-            android:maxLength="1" />
+            android:hint="Dé 3" />
     </LinearLayout>
 
     <Button
