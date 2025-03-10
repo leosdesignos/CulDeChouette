@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,7 +33,7 @@ public class SiroterActivity extends AppCompatActivity {
     private int currentPlayerIndex;
     private ArrayList<Player> playerList;
     private Map<String, Integer> roundScore;
-    private Map<String, Spinner> playerSpinners;
+    private PlayersAdapter playersAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +53,8 @@ public class SiroterActivity extends AppCompatActivity {
         playerList = (ArrayList<Player>) getIntent().getSerializableExtra("playerList");
         roundScore = (HashMap<String, Integer>) getIntent().getSerializableExtra("roundScore");
 
-        playerSpinners = new HashMap<>();
-
-        PlayersAdapter adapter = new PlayersAdapter(playerList);
-        playersListView.setAdapter(adapter);
+        playersAdapter = new PlayersAdapter(playerList);
+        playersListView.setAdapter(playersAdapter);
 
         validateBetButton.setOnClickListener(v -> validateBets());
         validateScoreButton.setOnClickListener(v -> validateScore());
@@ -93,7 +92,7 @@ public class SiroterActivity extends AppCompatActivity {
                 }
             }
 
-            int bet = playerSpinners.get(player.name()).getSelectedItemPosition();
+            int bet = playersAdapter.getPlayerChoice(player.name());
             if (bet != 0) {
                 score -= 5;
                 if (bet == diceValue) {
@@ -111,14 +110,16 @@ public class SiroterActivity extends AppCompatActivity {
         finish();
     }
 
-
-
     private class PlayersAdapter extends ArrayAdapter<Player> {
-        private ArrayList<Player> playersList;
+        private final Map<String, Integer> playerSelection;
+        private final ArrayAdapter<CharSequence> spinnerAdapter;
 
         public PlayersAdapter(ArrayList<Player> playersList) {
             super(SiroterActivity.this, R.layout.player_item, playersList);
-            this.playersList = playersList;
+            this.playerSelection = new HashMap<>();
+            this.spinnerAdapter = ArrayAdapter.createFromResource(getContext(),
+                    R.array.dice_options, android.R.layout.simple_spinner_item);
+            this.spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         }
 
         @Override
@@ -133,14 +134,24 @@ public class SiroterActivity extends AppCompatActivity {
             Player player = getItem(position);
             playerNameTextView.setText(player.name());
 
-            ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(getContext(),
-                    R.array.dice_options, android.R.layout.simple_spinner_item);
-            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             choiceSpinner.setAdapter(spinnerAdapter);
+            choiceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    playerSelection.put(player.name(), position);
+                }
 
-            playerSpinners.put(player.name(), choiceSpinner);
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                    playerSelection.put(player.name(), 0);
+                }
+            });
 
             return convertView;
+        }
+
+        public int getPlayerChoice(String playerName) {
+            return playerSelection.get(playerName);
         }
     }
 }

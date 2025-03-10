@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
         figureText.setText("Aucune");
 //        validateScoreButton.setEnabled(false);
         nextTurnButton.setEnabled(false);
+        siroterButton.setEnabled(true);
         siroterButton.setVisibility(View.GONE);
 
         dice1EditText.focus();
