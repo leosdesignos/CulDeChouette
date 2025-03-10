@@ -3,22 +3,20 @@ package com.example.culdechouette;
 import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class SummaryActivity extends AppCompatActivity {
-
-    private ListView summaryListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
 
-        summaryListView = findViewById(R.id.summaryListView);
+        ListView summaryListView = findViewById(R.id.summaryListView);
 
         ArrayList<HashMap<String, String>> gameLog = (ArrayList<HashMap<String, String>>) getIntent().getSerializableExtra("gameLog");
 

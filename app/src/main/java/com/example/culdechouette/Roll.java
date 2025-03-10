@@ -4,9 +4,9 @@ import java.util.Arrays;
 
 public class Roll {
 
-    private Figure figure;
-    private int figureValue;
-    private int figureScore;
+    private final Figure figure;
+    private final int figureValue;
+    private final int figureScore;
 
     public enum Figure {
         CHOUETTE,

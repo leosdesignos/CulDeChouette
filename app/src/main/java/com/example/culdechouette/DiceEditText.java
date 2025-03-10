@@ -1,6 +1,7 @@
 package com.example.culdechouette;
 
 import android.content.Context;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.AttributeSet;
@@ -44,11 +45,13 @@ public class DiceEditText extends androidx.appcompat.widget.AppCompatEditText {
     }
 
     public int value() {
-        return Integer.parseInt(getText().toString());
+        Editable text = getText();
+        return text == null ? -1 : Integer.parseInt(text.toString());
     }
 
     public boolean isEmpty() {
-        return getText().toString().isEmpty();
+        Editable text = getText();
+        return text == null || text.toString().isEmpty();
     }
 
     public void focus() {
@@ -70,8 +73,8 @@ public class DiceEditText extends androidx.appcompat.widget.AppCompatEditText {
 
     private class DiceKeyListener implements View.OnKeyListener {
 
-        private EditText nextEditText;
-        private Set<Integer> allowedKeys = new HashSet<>(Arrays.asList(
+        private final EditText nextEditText;
+        private final Set<Integer> allowedKeys = new HashSet<>(Arrays.asList(
                 KeyEvent.KEYCODE_1, KeyEvent.KEYCODE_2, KeyEvent.KEYCODE_3,
                 KeyEvent.KEYCODE_4, KeyEvent.KEYCODE_5, KeyEvent.KEYCODE_6
         ));

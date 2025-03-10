@@ -3,13 +3,8 @@ package com.example.culdechouette;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,12 +13,9 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,12 +26,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView resultText;
     private TextView figureText;
     private TextView playersScoreText;
-    private Button validateScoreButton;
     private Button siroterButton;
     private Button nextTurnButton;
 
     private int currentPlayerIndex = -1;
-    private ArrayList<Player> playerList = new ArrayList<>();
+    private final ArrayList<Player> playerList = new ArrayList<>();
     private HashMap<String, Integer> roundScore = new HashMap<>();
     private Roll roll;
 
@@ -74,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         resultText = findViewById(R.id.resultText);
         figureText = findViewById(R.id.figureText);
         playersScoreText = findViewById(R.id.playersScoreText);
-        validateScoreButton = findViewById(R.id.validateScoreButton);
+        Button validateScoreButton = findViewById(R.id.validateScoreButton);
         siroterButton = findViewById(R.id.siroterButton);
         nextTurnButton = findViewById(R.id.nextTurnButton);
 
@@ -95,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void validateScore() {
         if (dice1EditText.isEmpty() || dice2EditText.isEmpty() || dice3EditText.isEmpty()) {
-            Toast.makeText(getApplicationContext(), "Dés non valides", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.wrong_dice_input, Toast.LENGTH_SHORT).show();
             return;
         }
         int dice1 = dice1EditText.value();
@@ -135,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         nextTurnButton.setEnabled(true);
-//        validateScoreButton.setEnabled(false);
     }
 
     private void nextTurn() {
@@ -146,9 +136,8 @@ public class MainActivity extends AppCompatActivity {
         dice1EditText.setText("");
         dice2EditText.setText("");
         dice3EditText.setText("");
-        resultText.setText("0");
-        figureText.setText("Aucune");
-//        validateScoreButton.setEnabled(false);
+        resultText.setText(R.string.zero);
+        figureText.setText(R.string.none_e);
         nextTurnButton.setEnabled(false);
         siroterButton.setEnabled(true);
         siroterButton.setVisibility(View.GONE);
@@ -165,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updatePlayersScore() {
-        StringBuilder scoresText = new StringBuilder("");
+        StringBuilder scoresText = new StringBuilder();
         for (Player player : playerList) {
             if (roundScore.containsKey(player.name())){
                 player.addScore(roundScore.get(player.name()));

@@ -19,8 +19,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".SummaryActivity" />
-        <activity android:name=".SiroterActivity" />
+        <activity
+            android:name=".SiroterActivity"
+            android:label="@string/siroting" />
+        <activity
+            android:name=".SummaryActivity"
+            android:label="@string/summary"/>
     </application>
 
 </manifest>

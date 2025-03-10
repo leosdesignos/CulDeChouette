@@ -7,18 +7,9 @@
     tools:context=".SiroterActivity">
 
     <TextView
-        android:id="@+id/siroterTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Siroter"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/siroterMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Faites vos paris :"
+        android:text="@string/bet"
         android:textSize="18sp" />
 
     <ListView
@@ -30,20 +21,20 @@
         android:id="@+id/validateBetButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Valider les paris"
+        android:text="@string/validate_bet"
         android:enabled="true" />
 
     <com.example.culdechouette.DiceEditText
         android:id="@+id/diceEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Valeur du dé"
+        android:hint="@string/dice"
         android:visibility="gone" />
 
     <Button
         android:id="@+id/validateScoreButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Valider le score"
+        android:text="@string/validate_score"
         android:visibility="gone" />
 </LinearLayout>

@@ -10,13 +10,15 @@
         android:id="@+id/playerNameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nom du joueur" />
+        android:hint="@string/player_name"
+        android:inputType="textCapWords"
+        android:autofillHints="" />
 
     <Button
         android:id="@+id/addPlayerButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ajouter un joueur" />
+        android:text="@string/add_player" />
 
     <ListView
         android:id="@+id/playersListView"
@@ -24,17 +26,16 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <Button
-        android:id="@+id/doubletteButton"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Jouer en doublette"
-        android:checked="false" />
+        android:layout_marginBottom="10dp"
+        android:text="@string/doublette_hint" />
 
     <Button
         android:id="@+id/startGameButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Commencer la partie"
+        android:text="@string/start"
         android:enabled="false" />
 </LinearLayout>

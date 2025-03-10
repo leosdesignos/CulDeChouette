@@ -6,24 +6,23 @@
     android:padding="16dp"
     tools:context=".MainActivity">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="left">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tour de "
-            android:textSize="18sp" />
+        android:gravity="start">
 
         <TextView
             android:id="@+id/currentPlayerText"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/playing"
             android:textSize="18sp" />
     </LinearLayout>
 
@@ -38,53 +37,53 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Dé 1" />
+            android:hint="@string/dice1" />
 
         <com.example.culdechouette.DiceEditText
             android:id="@+id/dice2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Dé 2" />
+            android:hint="@string/dice2" />
 
         <com.example.culdechouette.DiceEditText
             android:id="@+id/dice3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Dé 3" />
+            android:hint="@string/dice3" />
     </LinearLayout>
 
     <Button
         android:id="@+id/validateScoreButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Valider le jet" />
+        android:text="@string/validate_roll" />
 
     <Button
         android:id="@+id/siroterButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Siroter"
+        android:text="@string/siroter"
         android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="left">
+        android:gravity="start">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Figure : "
+            android:text="@string/figure"
             android:textSize="18sp" />
 
         <TextView
             android:id="@+id/figureText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Aucune"
+            android:text="@string/none_e"
             android:textSize="18sp" />
     </LinearLayout>
 
@@ -92,19 +91,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="left">
+        android:gravity="start">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Score : "
+            android:text="@string/score"
             android:textSize="18sp" />
 
         <TextView
             android:id="@+id/resultText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="0"
+            android:text="@string/zero"
             android:textSize="18sp" />
     </LinearLayout>
 
@@ -112,13 +111,13 @@
         android:id="@+id/nextTurnButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tour suivant"
+        android:text="@string/next_turn"
         android:enabled="false" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Scores des joueurs : "
+        android:text="@string/player_score"
         android:textSize="18sp" />
 
     <TextView
