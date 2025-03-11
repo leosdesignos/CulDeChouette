@@ -47,8 +47,11 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void startGame() {
+        GameData gameData = GameData.getInstance();
+        for (String playerName : playersList) {
+            gameData.playerList().add(new Player(playerName));
+        }
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putStringArrayListExtra("playerNameList", playersList);
         startActivity(intent);
     }
 

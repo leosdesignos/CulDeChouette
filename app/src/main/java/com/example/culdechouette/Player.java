@@ -1,8 +1,8 @@
 package com.example.culdechouette;
 
-import java.io.Serializable;
+import androidx.annotation.NonNull;
 
-public class Player implements Serializable {
+public class Player {
     private final String playerName;
 
     private int score;
@@ -42,5 +42,11 @@ public class Player implements Serializable {
 
     public void setCivet(boolean civet) {
         this.civet = civet;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return name();
     }
 }

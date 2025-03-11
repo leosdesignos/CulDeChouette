@@ -14,9 +14,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 public class MainActivity extends AppCompatActivity {
 
     private TextView currentPlayerText;
@@ -29,10 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private Button siroterButton;
     private Button nextTurnButton;
 
-    private int currentPlayerIndex = -1;
-    private final ArrayList<Player> playerList = new ArrayList<>();
-    private HashMap<String, Integer> roundScore = new HashMap<>();
     private Roll roll;
+    private GameData game;
 
     ActivityResultLauncher<Intent> subActivity = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -41,13 +36,13 @@ public class MainActivity extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Intent intent = result.getData();
-                        int id = intent.getIntExtra("id", -1);
-                        if (id == SiroterActivity.SUBACT_ID) {
-                            siroterButton.setEnabled(false);
-                            roundScore = (HashMap<String, Integer>) intent.getSerializableExtra("roundScore");
-                            if (intent.getBooleanExtra("civet", false)) {
-                                playerList.get(currentPlayerIndex).setCivet(true);
-                            }
+                        int id = intent != null ? intent.getIntExtra("id", -1) : -1;
+                        switch (id) {
+                            case SiroterActivity.SUBACT_ID:
+                                siroterButton.setEnabled(false);
+                                break;
+                            default:
+                                break;
                         }
                     }
                 }
@@ -72,16 +67,12 @@ public class MainActivity extends AppCompatActivity {
         dice1EditText.jumpTo(dice2EditText);
         dice2EditText.jumpTo(dice3EditText);
 
-        ArrayList<String> playerNames = getIntent().getStringArrayListExtra("playerNameList");
-        for (String name : playerNames) {
-            playerList.add(new Player(name));
-        }
+        game = GameData.getInstance();
+        currentPlayerText.setText(game.currentPlayer().name());
 
         validateScoreButton.setOnClickListener(v -> validateScore());
         siroterButton.setOnClickListener(v -> showSiroterPopup());
         nextTurnButton.setOnClickListener(v -> nextTurn());
-
-        updatePlayer();
     }
 
     private void validateScore() {
@@ -97,10 +88,10 @@ public class MainActivity extends AppCompatActivity {
         figureText.setText(roll.figureName());
         resultText.setText(String.valueOf(roll.figureScore()));
 
-        Player currentPlayer = playerList.get(currentPlayerIndex);
+        Player currentPlayer = game.currentPlayer();
         switch (roll.figure()) {
             case CHOUETTE:
-                roundScore.put(currentPlayer.name(), roll.figureScore());
+                game.roundScore().put(currentPlayer, roll.figureScore());
                 siroterButton.setVisibility(View.VISIBLE);
                 break;
             case CHOUETTE_VELUTE:
@@ -109,10 +100,10 @@ public class MainActivity extends AppCompatActivity {
             case CUL_DE_CHOUETTE:
             case CUL_DE_CHOUETTE_SIROTE:
             case VELUTE:
-                roundScore.put(currentPlayer.name(), roll.figureScore());
+                game.roundScore().put(currentPlayer, roll.figureScore());
                 break;
             case SUITE_VELUTE:
-                roundScore.put(currentPlayer.name(), roll.figureScore());
+                game.roundScore().put(currentPlayer, roll.figureScore());
             case SUITE:
                 // TODO pts to last grelotte ca picotte
                 break;
@@ -129,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void nextTurn() {
-        updatePlayer();
+        game.endRound();
         updatePlayersScore();
 
         // Réinitialiser les champs de dés et le score
@@ -142,36 +133,21 @@ public class MainActivity extends AppCompatActivity {
         siroterButton.setEnabled(true);
         siroterButton.setVisibility(View.GONE);
 
+        currentPlayerText.setText(game.currentPlayer().name());
         dice1EditText.focus();
-    }
-
-    private void updatePlayer() {
-        currentPlayerIndex++;
-        if (currentPlayerIndex >= playerList.size()) {
-            currentPlayerIndex = 0;
-        }
-        currentPlayerText.setText(playerList.get(currentPlayerIndex).name());
     }
 
     private void updatePlayersScore() {
         StringBuilder scoresText = new StringBuilder();
-        for (Player player : playerList) {
-            if (roundScore.containsKey(player.name())){
-                player.addScore(roundScore.get(player.name()));
-            }
+        for (Player player : game.playerList()) {
             scoresText.append(player.name()).append(" : ").append(player.score()).append("\n");
         }
         playersScoreText.setText(scoresText.toString());
-
-        roundScore.clear();
     }
 
     private void showSiroterPopup() {
         Intent intent = new Intent(this, SiroterActivity.class);
-        intent.putExtra("currentPlayerIndex", currentPlayerIndex);
-        intent.putExtra("playerList", playerList);
         intent.putExtra("chouetteValue", roll.figureValue());
-        intent.putExtra("roundScore", (HashMap<String, Integer>) roundScore);
         subActivity.launch(intent);
     }
 

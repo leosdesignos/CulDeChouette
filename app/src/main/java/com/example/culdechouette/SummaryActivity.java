@@ -18,6 +18,7 @@ public class SummaryActivity extends AppCompatActivity {
 
         ListView summaryListView = findViewById(R.id.summaryListView);
 
+        //noinspection unchecked
         ArrayList<HashMap<String, String>> gameLog = (ArrayList<HashMap<String, String>>) getIntent().getSerializableExtra("gameLog");
 
         SimpleAdapter adapter = new SimpleAdapter(
