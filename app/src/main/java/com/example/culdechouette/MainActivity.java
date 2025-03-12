@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
                                 siroterButton.setEnabled(false);
                                 break;
                             case ChouetteVeluteActivity.SUBACT_ID:
+                            case SuiteActivity.SUBACT_ID:
                             default:
                                 break;
                         }
@@ -109,9 +110,10 @@ public class MainActivity extends AppCompatActivity {
             case SUITE_VELUTE:
                 game.roundScore().put(currentPlayer, roll.figureScore());
             case SUITE:
-                // TODO pts to last grelotte ca picotte
+                showSuitePopup();
                 break;
             case SOUFLETTE:
+                // TODO souflette challenge
                 break;
             case NEANT:
                 currentPlayer.setGrelottine(true);
@@ -162,4 +164,9 @@ public class MainActivity extends AppCompatActivity {
         subActivity.launch(intent);
     }
 
+    private void showSuitePopup() {
+        Intent intent = new Intent(this, SuiteActivity.class);
+        intent.putExtra("suiteValue", roll.figureValue());
+        subActivity.launch(intent);
+    }
 }

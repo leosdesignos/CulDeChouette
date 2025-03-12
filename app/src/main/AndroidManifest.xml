@@ -26,6 +26,9 @@
             android:name=".ChouetteVeluteActivity"
             android:label="@string/act_chouette_velute" />
         <activity
+            android:name=".SuiteActivity"
+            android:label="@string/act_suite" />
+        <activity
             android:name=".SummaryActivity"
             android:label="@string/act_summary"/>
     </application>

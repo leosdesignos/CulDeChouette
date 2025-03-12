@@ -187,9 +187,7 @@ public class SiroterActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-                    playerSelection.put(player, 0);
-                }
+                public void onNothingSelected(AdapterView<?> adapterView) { }
             });
             if (playerSelection.containsKey(player)) {
                 //noinspection ConstantConditions
