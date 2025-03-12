@@ -25,11 +25,14 @@ public class SiroterActivity extends AppCompatActivity {
 
     private DiceEditText diceEditText;
     private Button validateBetButton;
-    private Button validateScoreButton;
+    private Button validateRollButton;
+    private Button backButton;
+    private TextView resultText;
     private LinearLayout contreSiropLayout;
     private Spinner playerSpinner;
 
     private boolean civet;
+    private boolean success;
     private int chouetteValue;
     private HashMap<Player, Integer> siroterScore;
     private PlayersAdapter playersAdapter;
@@ -43,10 +46,11 @@ public class SiroterActivity extends AppCompatActivity {
         ListView playersListView = findViewById(R.id.playersListView);
         diceEditText = findViewById(R.id.diceEditText);
         validateBetButton = findViewById(R.id.validateBetButton);
-        validateScoreButton = findViewById(R.id.validateScoreButton);
+        validateRollButton = findViewById(R.id.validateRollButton);
+        resultText = findViewById(R.id.resultText);
         contreSiropLayout = findViewById(R.id.contreSiropLayout);
         playerSpinner = findViewById(R.id.playerSpinner);
-        Button backButton = findViewById(R.id.backButton);
+        backButton = findViewById(R.id.backButton);
 
         // Récupérer les données passées à l'activité
         chouetteValue = getIntent().getIntExtra("chouetteValue", -1);
@@ -58,8 +62,8 @@ public class SiroterActivity extends AppCompatActivity {
         playersListView.setAdapter(playersAdapter);
 
         validateBetButton.setOnClickListener(v -> validateBets());
-        validateScoreButton.setOnClickListener(v -> validateScore());
-        backButton.setOnClickListener(v -> validateContreSirop());
+        validateRollButton.setOnClickListener(v -> validateRoll());
+        backButton.setOnClickListener(v -> backToMainActivity());
 
         ArrayList<Player> playerItems = new ArrayList<>(game.playerList());
         playerItems.add(0, new Player(getString(R.string.no_one)));
@@ -70,14 +74,14 @@ public class SiroterActivity extends AppCompatActivity {
     }
 
     private void validateBets() {
-        // TODO disable spinners
+        playersAdapter.disableSpinners();
         validateBetButton.setEnabled(false);
         diceEditText.setVisibility(View.VISIBLE);
-        validateScoreButton.setVisibility(View.VISIBLE);
+        validateRollButton.setVisibility(View.VISIBLE);
         diceEditText.focus();
     }
 
-    private void validateScore() {
+    private void validateRoll() {
         if (diceEditText.isEmpty()) {
             Toast.makeText(getApplicationContext(), R.string.wrong_dice_input, Toast.LENGTH_SHORT).show();
             return;
@@ -85,7 +89,7 @@ public class SiroterActivity extends AppCompatActivity {
         int diceValue = diceEditText.value();
 
         civet = false;
-        boolean contreSirop = true;
+        success = false;
 
         Player currentPlayer = game.currentPlayer();
         for (Player player : game.playerList()) {
@@ -94,8 +98,8 @@ public class SiroterActivity extends AppCompatActivity {
 
             if (player.equals(currentPlayer)) {
                 if (diceValue == chouetteValue) {
-                    contreSirop = false;
-                    score = Roll.roll(chouetteValue, chouetteValue, chouetteValue).figureScore();
+                    success = true;
+                    score = new Roll(Roll.Figure.CUL_DE_CHOUETTE_SIROTE, chouetteValue).figureScore();
                 } else {
                     score = -score;
                     if (chouetteValue == 6) {
@@ -114,26 +118,29 @@ public class SiroterActivity extends AppCompatActivity {
             siroterScore.put(player, score);
         }
 
-        if (contreSirop) {
-            validateScoreButton.setEnabled(false);
-            contreSiropLayout.setVisibility(View.VISIBLE);
-        } else {
-            backToMainActivity();
-        }
-    }
+        validateRollButton.setEnabled(false);
+        backButton.setVisibility(View.VISIBLE);
+        resultText.setVisibility(View.VISIBLE);
+        resultText.setText(String.format("%s%s%s",
+                currentPlayer.name(),
+                success ? getString(R.string.sirotage_success) : getString(R.string.sirotage_fail),
+                success ? new Roll(Roll.Figure.CHOUETTE, chouetteValue).figureName() : ""));
 
-    private void validateContreSirop() {
-        Player player = (Player) playerSpinner.getSelectedItem();
-        if (!player.name().equals(getString(R.string.no_one))) {
-            //noinspection ConstantConditions
-            int score = siroterScore.get(player);
-            score += Roll.roll(chouetteValue, chouetteValue, chouetteValue).figureScore() / 5;
-            siroterScore.put(player, score);
+        if (!success) {
+            contreSiropLayout.setVisibility(View.VISIBLE);
         }
-        backToMainActivity();
     }
 
     private void backToMainActivity() {
+        if (!success) {
+            Player player = (Player) playerSpinner.getSelectedItem();
+            if (!player.name().equals(getString(R.string.no_one))) {
+                //noinspection ConstantConditions
+                int score = siroterScore.get(player);
+                score += new Roll(Roll.Figure.CUL_DE_CHOUETTE_SIROTE, chouetteValue).figureScore() / 5;
+                siroterScore.put(player, score);
+            }
+        }
         game.roundScore().putAll(siroterScore);
         if (civet) {
             game.currentPlayer().setCivet(true);
@@ -145,11 +152,15 @@ public class SiroterActivity extends AppCompatActivity {
     }
 
     private class PlayersAdapter extends ArrayAdapter<Player> {
+
         private final Map<Player, Integer> playerSelection;
         private final ArrayAdapter<CharSequence> spinnerAdapter;
 
+        private boolean spinnerEnable;
+
         public PlayersAdapter(ArrayList<Player> playersList) {
             super(SiroterActivity.this, R.layout.player_item, playersList);
+            this.spinnerEnable = true;
             this.playerSelection = new HashMap<>();
             this.spinnerAdapter = ArrayAdapter.createFromResource(getContext(),
                     R.array.dice_options, android.R.layout.simple_spinner_item);
@@ -180,6 +191,11 @@ public class SiroterActivity extends AppCompatActivity {
                     playerSelection.put(player, 0);
                 }
             });
+            if (playerSelection.containsKey(player)) {
+                //noinspection ConstantConditions
+                diceSpinner.setSelection(playerSelection.get(player));
+            }
+            diceSpinner.setEnabled(spinnerEnable);
 
             return convertView;
         }
@@ -187,6 +203,11 @@ public class SiroterActivity extends AppCompatActivity {
         public int getPlayerChoice(Player player) {
             Integer choice = playerSelection.get(player);
             return (choice != null) ? choice : 0;
+        }
+
+        public void disableSpinners() {
+            this.spinnerEnable = false;
+            notifyDataSetChanged();
         }
     }
 }

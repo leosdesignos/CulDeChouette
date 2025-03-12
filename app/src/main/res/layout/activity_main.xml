@@ -55,7 +55,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/validateScoreButton"
+        android:id="@+id/validateRollButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/validate_roll" />

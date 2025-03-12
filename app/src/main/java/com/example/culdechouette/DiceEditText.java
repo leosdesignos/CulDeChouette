@@ -5,6 +5,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -36,6 +37,7 @@ public class DiceEditText extends androidx.appcompat.widget.AppCompatEditText {
 
     private void init() {
         this.setInputType(InputType.TYPE_CLASS_NUMBER);
+        this.setGravity(Gravity.CENTER);
         this.setFilters(new InputFilter[]{new InputFilter.LengthFilter(1)});
         this.setOnKeyListener(new DiceKeyListener(null));
     }

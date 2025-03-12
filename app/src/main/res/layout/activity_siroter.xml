@@ -32,11 +32,18 @@
         android:visibility="gone" />
 
     <Button
-        android:id="@+id/validateScoreButton"
+        android:id="@+id/validateRollButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/validate_score"
+        android:text="@string/validate_roll"
         android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/resultText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="4dp"
+        android:textSize="18sp" />
 
     <LinearLayout
         android:id="@+id/contreSiropLayout"
@@ -44,21 +51,20 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="start"
-        android:paddingTop="10dp"
+        android:paddingVertical="8dp"
         android:visibility="gone">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="8dp"
+            android:paddingBottom="8dp"
             android:text="@string/contre_sirop_hint" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="start"
-            android:paddingBottom="8dp">
+            android:gravity="start">
 
             <Spinner
                 android:id="@+id/playerSpinner"
@@ -71,12 +77,12 @@
                 android:text="@string/contre_sirop"
                 android:textSize="18sp" />
         </LinearLayout>
-
-        <Button
-            android:id="@+id/backButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/back_to_game" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/backButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/back_to_game"
+        android:visibility="gone" />
 </LinearLayout>

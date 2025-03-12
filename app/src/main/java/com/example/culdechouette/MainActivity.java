@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView resultText;
     private TextView figureText;
     private TextView playersScoreText;
+    private Button validateRollButton;
     private Button siroterButton;
     private Button nextTurnButton;
 
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         resultText = findViewById(R.id.resultText);
         figureText = findViewById(R.id.figureText);
         playersScoreText = findViewById(R.id.playersScoreText);
-        Button validateScoreButton = findViewById(R.id.validateScoreButton);
+        validateRollButton = findViewById(R.id.validateRollButton);
         siroterButton = findViewById(R.id.siroterButton);
         nextTurnButton = findViewById(R.id.nextTurnButton);
 
@@ -70,21 +71,23 @@ public class MainActivity extends AppCompatActivity {
         game = GameData.getInstance();
         currentPlayerText.setText(game.currentPlayer().name());
 
-        validateScoreButton.setOnClickListener(v -> validateScore());
+        validateRollButton.setOnClickListener(v -> validateRoll());
         siroterButton.setOnClickListener(v -> showSiroterPopup());
         nextTurnButton.setOnClickListener(v -> nextTurn());
     }
 
-    private void validateScore() {
+    private void validateRoll() {
         if (dice1EditText.isEmpty() || dice2EditText.isEmpty() || dice3EditText.isEmpty()) {
             Toast.makeText(getApplicationContext(), R.string.wrong_dice_input, Toast.LENGTH_SHORT).show();
             return;
         }
+        validateRollButton.setEnabled(false);
+
         int dice1 = dice1EditText.value();
         int dice2 = dice2EditText.value();
         int dice3 = dice3EditText.value();
 
-        roll = Roll.roll(dice1, dice2, dice3);
+        roll = new Roll(dice1, dice2, dice3);
         figureText.setText(roll.figureName());
         resultText.setText(String.valueOf(roll.figureScore()));
 
