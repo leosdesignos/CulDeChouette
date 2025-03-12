@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Cul de Chouette</string>
-    <string name="siroting">Sirotage</string>
-    <string name="summary">Résumé</string>
+    <string name="act_siroting">Sirotage</string>
+    <string name="act_chouette_velute">Chouette Velute</string>
+    <string name="act_summary">Résumé</string>
 
     <string name="start">Commencer la partie</string>
     <string name="add_player">Ajouter un joueur</string>
@@ -30,9 +31,11 @@
     <string name="sirotage_fail">\ rate son sirotage</string>
     <string name="sirotage_success">\ sirote sa\ </string>
     <string name="contre_sirop">\ apprécie les fruits au sirop !</string>
+    <string name="chouette_velute">\ a trouvé un dur caillou !</string>
 
-    <string name="doublette_hint">Si vous êtes nombreux (plus de 6), il est possible de jouer en Doublette (ou Triplette !). Deux joueurs se mettent ensemble afin de marquer des points plus rapidement. Les deux joueurs en doublette doivent se positionner à l\'opposé l\'un de l\'autre autour de la table. Entrez alors des noms d\'équipe au lieu des noms des joueurs.</string>
+    <string name="doublette_hint">Si vous êtes nombreux (plus de 6), il est possible de jouer en Doublette (ou Triplette !). Deux joueurs se mettent ensemble afin de marquer des points plus rapidement. \nLes deux joueurs en doublette doivent se positionner à l\'opposé l\'un de l\'autre autour de la table. Entrez alors des noms d\'équipe au lieu des noms des joueurs.</string>
     <string name="contre_sirop_hint">Si un Sirotage échoue, le premier concurrent à lever le poing (sans frapper ce qui est éventuellement au-dessus de lui si possible) et crier \"J\'apprécie les fruits au sirop !\" gagne le double du dixième des points du Cul de Chouette tenté. En cas d\'égalité entre deux joueurs, il n\'y a aucun gain.</string>
+    <string name="chouette_velute_hint">Le premier joueur qui frappe dans ses mains en criant \"Pas mou le caillou !\" gagne les points de la Chouette Velute. \nSi plusieurs joueurs sont à égalité, et que le joueur qui a lancé les dés en fait partie, tous les autres joueurs à égalité lancent un dé. Si l\'un des joueurs fait un 6, il gagne les points, sinon c\'est le joueur qui a lancé les dés qui garde ses points. \nSi plusieurs joueurs sont à égalité, et que le joueur qui a lancé les dés n\'en fait pas partie, tous les autres joueurs à égalité lancent un dé. Le premier qui fait un 6 gagne les points. En cas d\'égalité, il faut relancer les dés jusqu\'à ce qu\'un seul des joueurs fasse un 6.</string>
 
     <string-array name="dice_options">
         <item>Aucun</item>

@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
                             case SiroterActivity.SUBACT_ID:
                                 siroterButton.setEnabled(false);
                                 break;
+                            case ChouetteVeluteActivity.SUBACT_ID:
                             default:
                                 break;
                         }
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 siroterButton.setVisibility(View.VISIBLE);
                 break;
             case CHOUETTE_VELUTE:
-                // TODO pts to first pas mou le caillou
+                showChouetteVelutePopup();
                 break;
             case CUL_DE_CHOUETTE:
             case CUL_DE_CHOUETTE_SIROTE:
@@ -133,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         resultText.setText(R.string.zero);
         figureText.setText(R.string.none_e);
         nextTurnButton.setEnabled(false);
+        validateRollButton.setEnabled(true);
         siroterButton.setEnabled(true);
         siroterButton.setVisibility(View.GONE);
 
@@ -151,6 +153,12 @@ public class MainActivity extends AppCompatActivity {
     private void showSiroterPopup() {
         Intent intent = new Intent(this, SiroterActivity.class);
         intent.putExtra("chouetteValue", roll.figureValue());
+        subActivity.launch(intent);
+    }
+
+    private void showChouetteVelutePopup() {
+        Intent intent = new Intent(this, ChouetteVeluteActivity.class);
+        intent.putExtra("veluteValue", roll.figureValue());
         subActivity.launch(intent);
     }
 
