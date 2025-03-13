@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView playersScoreText;
     private Button validateRollButton;
     private Button siroterButton;
+    private Button soufletteButton;
     private Button nextTurnButton;
 
     private Roll roll;
@@ -41,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
                         switch (id) {
                             case SiroterActivity.SUBACT_ID:
                                 siroterButton.setEnabled(false);
+                                break;
+                            case SoufletteActivity.SUBACT_ID:
+                                soufletteButton.setEnabled(false);
                                 break;
                             case ChouetteVeluteActivity.SUBACT_ID:
                             case SuiteActivity.SUBACT_ID:
@@ -65,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         playersScoreText = findViewById(R.id.playersScoreText);
         validateRollButton = findViewById(R.id.validateRollButton);
         siroterButton = findViewById(R.id.siroterButton);
+        soufletteButton = findViewById(R.id.soufletteButton);
         nextTurnButton = findViewById(R.id.nextTurnButton);
 
         dice1EditText.jumpTo(dice2EditText);
@@ -75,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         validateRollButton.setOnClickListener(v -> validateRoll());
         siroterButton.setOnClickListener(v -> showSiroterPopup());
+        soufletteButton.setOnClickListener(v -> showSouflettePopup());
         nextTurnButton.setOnClickListener(v -> nextTurn());
     }
 
@@ -113,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 showSuitePopup();
                 break;
             case SOUFLETTE:
-                // TODO souflette challenge
+                soufletteButton.setVisibility(View.VISIBLE);
                 break;
             case NEANT:
                 currentPlayer.setGrelottine(true);
@@ -139,7 +145,8 @@ public class MainActivity extends AppCompatActivity {
         validateRollButton.setEnabled(true);
         siroterButton.setEnabled(true);
         siroterButton.setVisibility(View.GONE);
-
+        soufletteButton.setEnabled(true);
+        soufletteButton.setVisibility(View.GONE);
         currentPlayerText.setText(game.currentPlayer().name());
         dice1EditText.focus();
     }
@@ -167,6 +174,11 @@ public class MainActivity extends AppCompatActivity {
     private void showSuitePopup() {
         Intent intent = new Intent(this, SuiteActivity.class);
         intent.putExtra("suiteValue", roll.figureValue());
+        subActivity.launch(intent);
+    }
+
+    private void showSouflettePopup() {
+        Intent intent = new Intent(this, SoufletteActivity.class);
         subActivity.launch(intent);
     }
 }

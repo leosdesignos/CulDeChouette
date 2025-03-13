@@ -64,7 +64,14 @@
         android:id="@+id/siroterButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/siroter"
+        android:text="@string/sirotage"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/soufletteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/souflette"
         android:visibility="gone" />
 
     <LinearLayout

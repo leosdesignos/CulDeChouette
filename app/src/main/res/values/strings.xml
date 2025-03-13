@@ -1,14 +1,14 @@
 <resources>
     <string name="app_name">Cul de Chouette</string>
-    <string name="act_siroting">Sirotage</string>
-    <string name="act_chouette_velute">Chouette Velute</string>
-    <string name="act_suite">Suite</string>
-    <string name="act_summary">Résumé</string>
+    <string name="sirotage">Sirotage</string>
+    <string name="chouette_velute">Chouette Velute</string>
+    <string name="suite">Suite</string>
+    <string name="souflette">Souflette</string>
+    <string name="summary">Résumé</string>
 
     <string name="start">Commencer la partie</string>
     <string name="add_player">Ajouter un joueur</string>
     <string name="validate_roll">Valider le jet</string>
-    <string name="siroter">Siroter</string>
     <string name="validate_bet">Valider les paris</string>
     <string name="back_to_game">Revenir au jeu</string>
     <string name="next_turn">Tour suivant</string>
@@ -27,20 +27,31 @@
     <string name="playing">\ est en train de jouer</string>
     <string name="figure">Figure :\ </string>
     <string name="score">Score :\ </string>
-    <string name="player_score">Scores des joueurs :\ </string>
-    <string name="bet">Faites vos paris :\ </string>
+    <string name="player_score">Scores des joueurs :</string>
+    <string name="bet">Place aux paris :</string>
     <string name="sirotage_fail">\ rate son sirotage</string>
     <string name="sirotage_success">\ sirote sa\ </string>
-    <string name="contre_sirop_expression">\ apprécie les fruits au sirop !</string>
-    <string name="chouette_velute_expression">\ a trouvé un dur caillou !</string>
-    <string name="suite_expression">\ ça picotte !</string>
-    <string name="loose">\ perd\ </string>
+    <string name="contre_sirop_expression">apprécie les fruits au sirop !</string>
+    <string name="chouette_velute_expression">a trouvé un dur caillou !</string>
+    <string name="suite_expression">ça picotte !</string>
+    <string name="loose">perd</string>
+    <string name="challenge">\ défie</string>
 
     <string name="doublette_hint">Si vous êtes nombreux (plus de 6), il est possible de jouer en Doublette (ou Triplette !). Deux joueurs se mettent ensemble afin de marquer des points plus rapidement. \nLes deux joueurs en doublette doivent se positionner à l\'opposé l\'un de l\'autre autour de la table. Entrez alors des noms d\'équipe au lieu des noms des joueurs.</string>
     <string name="contre_sirop_hint">Si un Sirotage échoue, le premier concurrent à lever le poing (sans frapper ce qui est éventuellement au-dessus de lui si possible) et crier \"J\'apprécie les fruits au sirop !\" gagne le double du dixième des points du Cul de Chouette tenté. En cas d\'égalité entre deux joueurs, il n\'y a aucun gain.</string>
     <string name="chouette_velute_hint">Le premier joueur qui frappe dans ses mains en criant \"Pas mou le caillou !\" gagne les points de la Chouette Velute. \nSi plusieurs joueurs sont à égalité, et que le joueur qui a lancé les dés en fait partie, tous les autres joueurs à égalité lancent un dé. Si l\'un des joueurs fait un 6, il gagne les points, sinon c\'est le joueur qui a lancé les dés qui garde ses points. \nSi plusieurs joueurs sont à égalité, et que le joueur qui a lancé les dés n\'en fait pas partie, tous les autres joueurs à égalité lancent un dé. Le premier qui fait un 6 gagne les points. En cas d\'égalité, il faut relancer les dés jusqu\'à ce qu\'un seul des joueurs fasse un 6.</string>
     <string name="suite_hint">Tous les joueurs doivent taper du poing sur la table en criant : \"Grelotte ça picote !\". Le dernier joueur à le faire perd 10 points. \nEn cas d\'égalité, les joueurs concernés se départagent en criant : \"Sans fin est la moisissure des bières bretonnes !\". \nS\'il y a toujours égalité, les joueurs concernés se départagent en lançant chacun un dé, c\’est celui qui aura fait le plus petit score qui perdra les 10 points. S\’il y a plusieurs joueurs qui ont fait le plus petit score, ils recommencent pour se départager, mais cette fois pour perdre 20 points (puis 30 points, etc).</string>
+    <string name="souflette_hint">Le joueur peut défier un autre joueur de son choix. Ce joueur a alors trois jets de dés pour réaliser lui aussi un 421. Les éventuels points donnés par d\'éventuelles combinaisons réalisées lors de ces éventuels jets ne sont pas comptés. Les joueurs peuvent conserver les dés ayant donné 4, 2 ou 1 entre chaque lancer, pour ainsi éviter de les relancer et avoir plus de chances de réussir le défi. \nSi le joueur défié réussit à faire 421 : \n- du premier coup, il gagne 50 points et le défiant les perd. \n- du deuxième coup, il gagne 40 points et le défiant les perd. \n- du troisième coup, il gagne 30 points et le défiant les perd. \nSi le joueur défié échoue, il perd 30 points et le défiant les gagne.</string>
 
+    <string-array name="dice_options">
+        <item>Aucun</item>
+        <item>Linotte</item>
+        <item>Alouette</item>
+        <item>Fauvette</item>
+        <item>Mouette</item>
+        <item>Bergeronnette</item>
+        <item>Chouette</item>
+    </string-array>
     <string-array name="suite_loose_options">
         <item>10 pts</item>
         <item>20 pts</item>
@@ -52,13 +63,10 @@
         <item>80 pts</item>
         <item>90 pts</item>
     </string-array>
-    <string-array name="dice_options">
-        <item>Aucun</item>
-        <item>Linotte</item>
-        <item>Alouette</item>
-        <item>Fauvette</item>
-        <item>Mouette</item>
-        <item>Bergeronnette</item>
-        <item>Chouette</item>
+    <string-array name="souflette_options">
+        <item>perd sa souflette</item>
+        <item>souffle du premier coup</item>
+        <item>souffle en deux coups</item>
+        <item>souffle en trois coups</item>
     </string-array>
 </resources>

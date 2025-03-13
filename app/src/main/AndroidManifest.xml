@@ -21,16 +21,19 @@
         <activity android:name=".MainActivity" />
         <activity
             android:name=".SiroterActivity"
-            android:label="@string/act_siroting" />
+            android:label="@string/sirotage" />
         <activity
             android:name=".ChouetteVeluteActivity"
-            android:label="@string/act_chouette_velute" />
+            android:label="@string/chouette_velute" />
         <activity
             android:name=".SuiteActivity"
-            android:label="@string/act_suite" />
+            android:label="@string/suite" />
+        <activity
+            android:name=".SoufletteActivity"
+            android:label="@string/souflette" />
         <activity
             android:name=".SummaryActivity"
-            android:label="@string/act_summary"/>
+            android:label="@string/summary"/>
     </application>
 
 </manifest>
