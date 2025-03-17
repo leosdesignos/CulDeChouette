@@ -1,5 +1,7 @@
 package com.example.culdechouette;
 
+import androidx.annotation.NonNull;
+
 import java.util.Arrays;
 
 public class Roll {
@@ -10,15 +12,28 @@ public class Roll {
     private final int figureScore;
 
     public enum Figure {
-        CHOUETTE,
-        CHOUETTE_VELUTE,
-        CUL_DE_CHOUETTE,
-        CUL_DE_CHOUETTE_SIROTE,
-        VELUTE,
-        SUITE,
-        SUITE_VELUTE,
-        SOUFLETTE,
-        NEANT
+        // TODO replace with R.string.figure_<name>
+        CHOUETTE("Chouette"),
+        CHOUETTE_VELUTE("Chouette velute"),
+        CUL_DE_CHOUETTE("Cul de chouette"),
+        CUL_DE_CHOUETTE_SIROTE("Cul de chouette siroté"),
+        VELUTE("Velute"),
+        SUITE("Suite"),
+        SUITE_VELUTE("Suite velute"),
+        SOUFLETTE("Souflette"),
+        NEANT("Néant");
+
+        private final String id;
+
+        Figure(String id) {
+            this.id = id;
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return this.id;
+        }
     }
 
     public Roll (int dice1, int dice2, int dice3) {

@@ -45,10 +45,7 @@ public class ChouetteVeluteActivity extends AppCompatActivity {
     private void backToMainActivity() {
         Player player = (Player) playerSpinner.getSelectedItem();
         if (!player.name().equals(getString(R.string.no_one))) {
-            //noinspection ConstantConditions
-            int score = game.roundScore().containsKey(player) ? game.roundScore().get(player) : 0;
-            score += new Roll(Roll.Figure.CHOUETTE_VELUTE, veluteValue).figureScore();
-            game.roundScore().put(player, score);
+            game.addRoundScore(player, new Roll(Roll.Figure.CHOUETTE_VELUTE, veluteValue).figureScore());
         }
         Intent resultIntent = new Intent();
         resultIntent.putExtra("id", SUBACT_ID);

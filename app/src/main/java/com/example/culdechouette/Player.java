@@ -32,16 +32,20 @@ public class Player {
         return this.grelottine;
     }
 
-    public void setGrelottine (boolean grelottine) {
+    public boolean setGrelottine (boolean grelottine) {
+        boolean toggled = this.grelottine != grelottine;
         this.grelottine = grelottine;
+        return toggled;
     }
 
     public boolean civet() {
         return this.civet;
     }
 
-    public void setCivet(boolean civet) {
+    public boolean setCivet(boolean civet) {
+        boolean toggled = this.civet != civet;
         this.civet = civet;
+        return toggled;
     }
 
     @NonNull

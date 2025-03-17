@@ -20,7 +20,6 @@ public class SuiteActivity extends AppCompatActivity {
     private Spinner pointSpinner;
     private Button backButton;
 
-    private int suiteValue;
     private GameData game;
 
     @Override
@@ -31,9 +30,6 @@ public class SuiteActivity extends AppCompatActivity {
         playerSpinner = findViewById(R.id.playerSpinner);
         pointSpinner = findViewById(R.id.pointSpinner);
         backButton = findViewById(R.id.backButton);
-
-        // Récupérer les données passées à l'activité
-        suiteValue = getIntent().getIntExtra("suiteValue", -1);
 
         game = GameData.getInstance();
 
@@ -65,10 +61,7 @@ public class SuiteActivity extends AppCompatActivity {
     private void backToMainActivity() {
         Player player = (Player) playerSpinner.getSelectedItem();
         if (!player.name().equals(getString(R.string.no_one))) {
-            //noinspection ConstantConditions
-            int score = game.roundScore().containsKey(player) ? game.roundScore().get(player) : 0;
-            score += -10 * (1 + pointSpinner.getSelectedItemPosition());
-            game.roundScore().put(player, score);
+            game.addRoundScore(player, -10 * (1 + pointSpinner.getSelectedItemPosition()));
         }
         Intent resultIntent = new Intent();
         resultIntent.putExtra("id", SUBACT_ID);

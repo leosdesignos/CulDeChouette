@@ -56,7 +56,7 @@ public class SiroterActivity extends AppCompatActivity {
         chouetteValue = getIntent().getIntExtra("chouetteValue", -1);
 
         game = GameData.getInstance();
-        siroterScore = new HashMap<>(game.roundScore());
+        siroterScore = new HashMap<>();
 
         playersAdapter = new PlayersAdapter(game.playerList());
         playersListView.setAdapter(playersAdapter);
@@ -93,15 +93,15 @@ public class SiroterActivity extends AppCompatActivity {
 
         Player currentPlayer = game.currentPlayer();
         for (Player player : game.playerList()) {
-            //noinspection ConstantConditions
-            int score = siroterScore.containsKey(player) ? siroterScore.get(player) : 0;
-
+            int score = 0;
             if (player.equals(currentPlayer)) {
+                int chouetteScore = new Roll(Roll.Figure.CHOUETTE, chouetteValue).figureScore();
+                score -= chouetteScore; // Revert score added in MainActivity
                 if (diceValue == chouetteValue) {
                     success = true;
-                    score = new Roll(Roll.Figure.CUL_DE_CHOUETTE_SIROTE, chouetteValue).figureScore();
+                    score += new Roll(Roll.Figure.CUL_DE_CHOUETTE_SIROTE, chouetteValue).figureScore();
                 } else {
-                    score = -score;
+                    score -= chouetteScore;
                     if (chouetteValue == 6) {
                         civet = true;
                     }
@@ -135,18 +135,21 @@ public class SiroterActivity extends AppCompatActivity {
         if (!success) {
             Player player = (Player) playerSpinner.getSelectedItem();
             if (!player.name().equals(getString(R.string.no_one))) {
-                //noinspection ConstantConditions
-                int score = siroterScore.get(player);
-                score += new Roll(Roll.Figure.CUL_DE_CHOUETTE_SIROTE, chouetteValue).figureScore() / 5;
-                siroterScore.put(player, score);
+                game.addRoundScore(player, new Roll(Roll.Figure.CUL_DE_CHOUETTE_SIROTE, chouetteValue).figureScore() / 5);
             }
         }
-        game.roundScore().putAll(siroterScore);
+        for (Player player : siroterScore.keySet()) {
+            //noinspection ConstantConditions
+            game.addRoundScore(player, siroterScore.get(player));
+        }
         if (civet) {
-            game.currentPlayer().setCivet(true);
+            if (game.currentPlayer().setCivet(true)) {
+                Toast.makeText(getApplicationContext(), R.string.civet_acq, Toast.LENGTH_SHORT).show();
+            }
         }
         Intent resultIntent = new Intent();
         resultIntent.putExtra("id", SUBACT_ID);
+        resultIntent.putExtra("success", success);
         setResult(RESULT_OK, resultIntent);
         finish();
     }

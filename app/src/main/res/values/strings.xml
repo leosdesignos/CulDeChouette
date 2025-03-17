@@ -12,6 +12,17 @@
     <string name="validate_bet">Valider les paris</string>
     <string name="back_to_game">Revenir au jeu</string>
     <string name="next_turn">Tour suivant</string>
+    <string name="civet">Civet</string>
+
+    <string name="figure_chouette">Chouette</string>
+    <string name="figure_cul_de_chouette">Cul de chouette</string>
+    <string name="figure_cul_de_chouette_sirote">Cul de chouette siroté</string>
+    <string name="figure_chouette_velute">Chouette velute</string>
+    <string name="figure_suite">Suite</string>
+    <string name="figure_suite_velute">Suite velute</string>
+    <string name="figure_velute">Velute</string>
+    <string name="figure_souflette">Souflette</string>
+    <string name="figure_neant">Néant</string>
 
     <string name="player_name">Nom du joueur</string>
     <string name="no_team">Aucune équipe</string>
@@ -19,11 +30,15 @@
     <string name="none_e">Aucune</string>
     <string name="no_one">Personne</string>
     <string name="zero">0</string>
+    <string name="excl">!</string>
     <string name="dice">Valeur du dé</string>
     <string name="dice1">Dé 1</string>
     <string name="dice2">Dé 2</string>
     <string name="dice3">Dé 3</string>
     <string name="wrong_dice_input">Lancer invalide</string>
+    <string name="grelottine_acq">Grelottine acquise !</string>
+    <string name="civet_acq">Civet acquis !</string>
+    <string name="bevue_civet">Bévue ! Tu n\'as pas de civet !</string>
     <string name="playing">\ est en train de jouer</string>
     <string name="figure">Figure :\ </string>
     <string name="score">Score :\ </string>
@@ -34,6 +49,8 @@
     <string name="contre_sirop_expression">apprécie les fruits au sirop !</string>
     <string name="chouette_velute_expression">a trouvé un dur caillou !</string>
     <string name="suite_expression">ça picotte !</string>
+    <string name="civet_expression">Civet de</string>
+    <string name="on">sur</string>
     <string name="loose">perd</string>
     <string name="challenge">\ défie</string>
 
@@ -42,6 +59,7 @@
     <string name="chouette_velute_hint">Le premier joueur qui frappe dans ses mains en criant \"Pas mou le caillou !\" gagne les points de la Chouette Velute. \nSi plusieurs joueurs sont à égalité, et que le joueur qui a lancé les dés en fait partie, tous les autres joueurs à égalité lancent un dé. Si l\'un des joueurs fait un 6, il gagne les points, sinon c\'est le joueur qui a lancé les dés qui garde ses points. \nSi plusieurs joueurs sont à égalité, et que le joueur qui a lancé les dés n\'en fait pas partie, tous les autres joueurs à égalité lancent un dé. Le premier qui fait un 6 gagne les points. En cas d\'égalité, il faut relancer les dés jusqu\'à ce qu\'un seul des joueurs fasse un 6.</string>
     <string name="suite_hint">Tous les joueurs doivent taper du poing sur la table en criant : \"Grelotte ça picote !\". Le dernier joueur à le faire perd 10 points. \nEn cas d\'égalité, les joueurs concernés se départagent en criant : \"Sans fin est la moisissure des bières bretonnes !\". \nS\'il y a toujours égalité, les joueurs concernés se départagent en lançant chacun un dé, c\’est celui qui aura fait le plus petit score qui perdra les 10 points. S\’il y a plusieurs joueurs qui ont fait le plus petit score, ils recommencent pour se départager, mais cette fois pour perdre 20 points (puis 30 points, etc).</string>
     <string name="souflette_hint">Le joueur peut défier un autre joueur de son choix. Ce joueur a alors trois jets de dés pour réaliser lui aussi un 421. Les éventuels points donnés par d\'éventuelles combinaisons réalisées lors de ces éventuels jets ne sont pas comptés. Les joueurs peuvent conserver les dés ayant donné 4, 2 ou 1 entre chaque lancer, pour ainsi éviter de les relancer et avoir plus de chances de réussir le défi. \nSi le joueur défié réussit à faire 421 : \n- du premier coup, il gagne 50 points et le défiant les perd. \n- du deuxième coup, il gagne 40 points et le défiant les perd. \n- du troisième coup, il gagne 30 points et le défiant les perd. \nSi le joueur défié échoue, il perd 30 points et le défiant les gagne.</string>
+    <string name="civet_hint">Lorsqu\'un joueur a gagné un Civet, il peut l\'utiliser quand bon lui semble si son score est positif, avant de lancer ses deux premiers dés. Il mise alors un certain nombre de ses points (102 maximum), et parie sur son prochain coup (Chouette, Velute, Chouette Velute, Suite, ou Cul de Chouette). Dans le cas d\'un Cul de Chouette, il doit préciser avec ou sans Sirotage.</string>
 
     <string-array name="dice_options">
         <item>Aucun</item>

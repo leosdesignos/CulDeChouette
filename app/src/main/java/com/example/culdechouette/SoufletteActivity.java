@@ -68,23 +68,17 @@ public class SoufletteActivity extends AppCompatActivity {
     }
 
     private void backToMainActivity() {
+        Player currentPlayer = game.currentPlayer();
         Player player = (Player) playerSpinner.getSelectedItem();
         if (!player.name().equals(getString(R.string.no_one))) {
             int score;
-            Player currentPlayer = game.currentPlayer();
-            //noinspection ConstantConditions
-            int scoreP1 = game.roundScore().containsKey(currentPlayer) ? game.roundScore().get(currentPlayer) : 0;
-            //noinspection ConstantConditions
-            int scoreP2 = game.roundScore().containsKey(player) ? game.roundScore().get(player) : 0;
             if (0 == resultSpinner.getSelectedItemPosition()) {
                 score = +30;
             } else {
                 score = -60 + (10 * resultSpinner.getSelectedItemPosition());
             }
-            scoreP1 += score;
-            scoreP2 -= score;
-            game.roundScore().put(currentPlayer, scoreP1);
-            game.roundScore().put(player, scoreP2);
+            game.addRoundScore(currentPlayer, score);
+            game.addRoundScore(player, -score);
         }
         Intent resultIntent = new Intent();
         resultIntent.putExtra("id", SUBACT_ID);

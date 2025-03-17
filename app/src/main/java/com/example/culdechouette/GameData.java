@@ -42,16 +42,23 @@ public class GameData {
         }
     }
 
+    public void bevue(Player player) {
+        addRoundScore(player, -10);
+    }
+
+    public void addRoundScore(Player player, int score) {
+        //noinspection ConstantConditions
+        int playerScore = roundScore.containsKey(player) ? roundScore.get(player) : 0;
+        playerScore += score;
+        roundScore.put(player, playerScore);
+    }
+
     public Player currentPlayer() {
         return playerList.get(currentPlayerIndex);
     }
 
     public ArrayList<Player> playerList() {
         return playerList;
-    }
-
-    public HashMap<Player, Integer> roundScore() {
-        return roundScore;
     }
 
 //    public void log(Player player, Roll roll) {
