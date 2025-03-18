@@ -61,6 +61,11 @@ public class DiceEditText extends androidx.appcompat.widget.AppCompatEditText {
         showKeyboard(this);
     }
 
+    public void unfocus() {
+        clearFocus();
+        hideKeyboard(this);
+    }
+
     private void showKeyboard(View view) {
         if (view.requestFocus()) {
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);

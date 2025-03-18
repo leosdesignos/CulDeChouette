@@ -1,9 +1,12 @@
 package com.example.culdechouette;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class GameData {
+
+    private static final int GOAL = 343;
 
     private static GameData instance;
 
@@ -59,6 +62,16 @@ public class GameData {
 
     public ArrayList<Player> playerList() {
         return playerList;
+    }
+
+    public ArrayList<Player> rankedPlayerList() {
+        ArrayList<Player> rankedList = new ArrayList<>(playerList);
+        Collections.sort(rankedList, (p1, p2) -> Integer.compare(p2.score(), p1.score()));
+        return rankedList;
+    }
+
+    public boolean isWinner() {
+        return rankedPlayerList().get(0).score() >= GOAL;
     }
 
 //    public void log(Player player, Roll roll) {

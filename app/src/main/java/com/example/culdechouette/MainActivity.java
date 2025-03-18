@@ -20,8 +20,10 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView resultText;
     private TextView figureText;
     private TextView playersScoreText;
+    private TextView winnerText;
+    private TextView rankText;
     private Button validateRollButton;
     private Button siroterButton;
     private Button soufletteButton;
@@ -40,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText civetBet;
     private Spinner civetFigure;
     private LinearLayout civetLayout;
+    private LinearLayout gameLayout;
+    private LinearLayout winnerLayout;
+    private LinearLayout buttonLayout;
 
     private Roll roll;
     private GameData game;
@@ -84,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
         resultText = findViewById(R.id.resultText);
         figureText = findViewById(R.id.figureText);
         playersScoreText = findViewById(R.id.playersScoreText);
+        winnerText = findViewById(R.id.winnerText);
+        rankText = findViewById(R.id.rankText);
         validateRollButton = findViewById(R.id.validateRollButton);
         siroterButton = findViewById(R.id.siroterButton);
         soufletteButton = findViewById(R.id.soufletteButton);
@@ -92,6 +101,9 @@ public class MainActivity extends AppCompatActivity {
         civetBet = findViewById(R.id.civetBet);
         civetFigure = findViewById(R.id.civetFigure);
         civetLayout = findViewById(R.id.civetLayout);
+        gameLayout = findViewById(R.id.gameLayout);
+        winnerLayout = findViewById(R.id.winnerLayout);
+        buttonLayout = findViewById(R.id.buttonLayout);
 
         dice1EditText.jumpTo(dice2EditText);
         dice2EditText.jumpTo(dice3EditText);
@@ -180,6 +192,8 @@ public class MainActivity extends AppCompatActivity {
         civetLayout.setVisibility(View.GONE);
         currentPlayerText.setText(game.currentPlayer().name());
         dice1EditText.focus();
+
+        checkWinner();
     }
 
     private void updateFigureScore() {
@@ -270,6 +284,26 @@ public class MainActivity extends AppCompatActivity {
             int civetBetValue = Integer.parseInt(civetBetStr);
             boolean success = roll.figure().equals(civetFigure.getSelectedItem());
             game.addRoundScore(player, success ? civetBetValue : -civetBetValue);
+        }
+    }
+
+    private void checkWinner() {
+        if (game.isWinner()) {
+            dice1EditText.unfocus();
+            dice2EditText.unfocus();
+            dice3EditText.unfocus();
+            gameLayout.setVisibility(View.GONE);
+            buttonLayout.setVisibility(View.GONE);
+
+            StringBuilder rank = new StringBuilder();
+            ArrayList<Player> rankedPlayers = game.rankedPlayerList();
+            for (Player player : rankedPlayers) {
+                rank.append(String.format(Locale.FRENCH, "%s :  %d%s%n",
+                        player.name(), player.score(), getString(R.string.points)));
+            }
+            winnerText.setText(rankedPlayers.get(0).name());
+            rankText.setText(rank);
+            winnerLayout.setVisibility(View.VISIBLE);
         }
     }
 }
