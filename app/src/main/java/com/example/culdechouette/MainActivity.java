@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void validateRoll() {
         if (dice1EditText.isEmpty() || dice2EditText.isEmpty() || dice3EditText.isEmpty()) {
-            Toast.makeText(getApplicationContext(), R.string.wrong_dice_input, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.wrong_dice_input, Toast.LENGTH_SHORT).show();
             return;
         }
         validateRollButton.setEnabled(false);
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case NEANT:
                 if (currentPlayer.setGrelottine(true)) {
-                    Toast.makeText(getApplicationContext(), R.string.grelottine_acq, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.grelottine_acq, Toast.LENGTH_SHORT).show();
                 }
                 break;
             default:
@@ -261,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
                 Roll.Figure.CHOUETTE_VELUTE, Roll.Figure.SUITE,
                 Roll.Figure.CUL_DE_CHOUETTE, Roll.Figure.CUL_DE_CHOUETTE_SIROTE);
         ArrayAdapter<Roll.Figure> spinnerAdapter = new ArrayAdapter<>(
-                getApplicationContext(), android.R.layout.simple_spinner_item, figs);
+                this, android.R.layout.simple_spinner_item, figs);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
         civetFigure.setAdapter(spinnerAdapter);
 
@@ -278,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
         Player player = game.currentPlayer();
         if (!player.civet()) {
             game.bevue(player);
-            Toast.makeText(getApplicationContext(), R.string.bevue_civet, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.bevue_civet, Toast.LENGTH_SHORT).show();
         } else {
             player.setCivet(false);
             int civetBetValue = Integer.parseInt(civetBetStr);

@@ -39,7 +39,8 @@ public class SuiteActivity extends AppCompatActivity {
         ArrayList<Player> playerItems = new ArrayList<>(game.playerList());
         playerItems.add(0, new Player(getString(R.string.no_one)));
 
-        ArrayAdapter<Player> spinnerAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, playerItems);
+        ArrayAdapter<Player> spinnerAdapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, playerItems);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
         playerSpinner.setAdapter(spinnerAdapter);
         playerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -52,8 +53,8 @@ public class SuiteActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> adapterView) { }
         });
 
-        ArrayAdapter<CharSequence> spinnerAdapter2 = ArrayAdapter.createFromResource(getApplicationContext(),
-                R.array.suite_loose_options, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> spinnerAdapter2 = ArrayAdapter.createFromResource(
+                this, R.array.suite_loose_options, android.R.layout.simple_spinner_item);
         spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
         pointSpinner.setAdapter(spinnerAdapter2);
     }

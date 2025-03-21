@@ -47,7 +47,8 @@ public class SoufletteActivity extends AppCompatActivity {
         playerItems.add(0, new Player(getString(R.string.no_one)));
         playerItems.remove(game.currentPlayer());
 
-        ArrayAdapter<Player> spinnerAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, playerItems);
+        ArrayAdapter<Player> spinnerAdapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, playerItems);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
         playerSpinner.setAdapter(spinnerAdapter);
         playerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -61,8 +62,8 @@ public class SoufletteActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> adapterView) { }
         });
 
-        ArrayAdapter<CharSequence> spinnerAdapter2 = ArrayAdapter.createFromResource(getApplicationContext(),
-                R.array.souflette_options, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> spinnerAdapter2 = ArrayAdapter.createFromResource(
+                this, R.array.souflette_options, android.R.layout.simple_spinner_item);
         spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
         resultSpinner.setAdapter(spinnerAdapter2);
     }

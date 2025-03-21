@@ -68,7 +68,7 @@ public class SiroterActivity extends AppCompatActivity {
         ArrayList<Player> playerItems = new ArrayList<>(game.playerList());
         playerItems.add(0, new Player(getString(R.string.no_one)));
 
-        ArrayAdapter<Player> spinnerAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, playerItems);
+        ArrayAdapter<Player> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, playerItems);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
         playerSpinner.setAdapter(spinnerAdapter);
     }
@@ -83,7 +83,7 @@ public class SiroterActivity extends AppCompatActivity {
 
     private void validateRoll() {
         if (diceEditText.isEmpty()) {
-            Toast.makeText(getApplicationContext(), R.string.wrong_dice_input, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.wrong_dice_input, Toast.LENGTH_SHORT).show();
             return;
         }
         int diceValue = diceEditText.value();
@@ -144,7 +144,7 @@ public class SiroterActivity extends AppCompatActivity {
         }
         if (civet) {
             if (game.currentPlayer().setCivet(true)) {
-                Toast.makeText(getApplicationContext(), R.string.civet_acq, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.civet_acq, Toast.LENGTH_SHORT).show();
             }
         }
         Intent resultIntent = new Intent();
