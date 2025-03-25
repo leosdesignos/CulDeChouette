@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="16dp"
+        android:textSize="@dimen/text_size_small"
         android:text="@string/suite_hint" />
 
     <LinearLayout
@@ -27,8 +28,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/loose"
-            android:textSize="18sp" />
+            android:text="@string/loose" />
 
         <Spinner
             android:id="@+id/pointSpinner"
@@ -38,8 +38,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/suite_expression"
-            android:textSize="18sp" />
+            android:text="@string/suite_expression" />
     </LinearLayout>
 
     <Button

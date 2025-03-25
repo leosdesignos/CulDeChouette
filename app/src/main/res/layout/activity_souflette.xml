@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="16dp"
+        android:textSize="@dimen/text_size_small"
         android:text="@string/souflette_hint" />
 
     <LinearLayout
@@ -22,15 +23,12 @@
         <TextView
             android:id="@+id/playerText"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="18sp" />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/challenge"
-            android:textSize="18sp" />
+            android:text="@string/challenge" />
 
         <Spinner
             android:id="@+id/playerSpinner"
@@ -50,9 +48,7 @@
         <TextView
             android:id="@+id/player2Text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="18sp" />
+            android:layout_height="wrap_content" />
 
         <Spinner
             android:id="@+id/resultSpinner"

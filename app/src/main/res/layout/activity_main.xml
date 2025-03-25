@@ -19,15 +19,12 @@
             <TextView
                 android:id="@+id/currentPlayerText"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textSize="18sp" />
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/playing"
-                android:textSize="18sp" />
+                android:text="@string/playing" />
         </LinearLayout>
 
         <LinearLayout
@@ -42,7 +39,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
                 android:text="@string/civet_expression" />
 
             <EditText
@@ -58,7 +54,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
                 android:text="@string/on" />
 
             <Spinner
@@ -69,7 +64,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
                 android:text="@string/excl" />
         </LinearLayout>
 
@@ -129,15 +123,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/figure"
-                android:textSize="18sp" />
+                android:text="@string/figure" />
 
             <TextView
                 android:id="@+id/figureText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/none_e"
-                android:textSize="18sp" />
+                android:text="@string/none_e" />
         </LinearLayout>
 
         <LinearLayout
@@ -148,15 +140,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/score"
-                android:textSize="18sp" />
+                android:text="@string/score" />
 
             <TextView
                 android:id="@+id/resultText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/zero"
-                android:textSize="18sp" />
+                android:text="@string/zero" />
         </LinearLayout>
 
         <Button
@@ -169,15 +159,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/player_score"
-            android:textSize="18sp" />
+            android:text="@string/player_score" />
 
         <TextView
             android:id="@+id/playersScoreText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="18sp" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <LinearLayout
@@ -193,14 +180,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:textSize="32sp" />
+            android:textSize="@dimen/text_size_very_large" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/win_the_game"
             android:textAlignment="center"
-            android:textSize="24sp" />
+            android:textSize="@dimen/text_size_large" />
 
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
@@ -212,7 +199,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:textSize="24sp" />
+            android:textSize="@dimen/text_size_large" />
     </LinearLayout>
 
     <LinearLayout

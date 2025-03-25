@@ -285,6 +285,7 @@ public class MainActivity extends AppCompatActivity {
             boolean success = roll.figure().equals(civetFigure.getSelectedItem());
             game.addRoundScore(player, success ? civetBetValue : -civetBetValue);
         }
+        civetBet.setText("");
     }
 
     private void checkWinner() {
