@@ -5,4 +5,6 @@
     <color name="secondaryColor">#8EA2A0</color>
     <color name="secondaryColorVariant">#476C74</color>
     <color name="textColor">#FAFEFF</color>
+
+    <color name="ic_launcher_background">#BC9B8A</color>
 </resources>

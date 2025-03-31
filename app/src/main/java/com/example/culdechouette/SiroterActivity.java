@@ -23,11 +23,13 @@ public class SiroterActivity extends AppCompatActivity {
 
     public static final int SUBACT_ID = 0;
 
+    private ListView playersListView;
     private DiceEditText diceEditText;
     private Button validateBetButton;
     private Button validateRollButton;
     private Button backButton;
     private TextView resultText;
+    private TextView hintText;
     private LinearLayout contreSiropLayout;
     private Spinner playerSpinner;
 
@@ -43,11 +45,12 @@ public class SiroterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_siroter);
 
-        ListView playersListView = findViewById(R.id.playersListView);
+        playersListView = findViewById(R.id.playersListView);
         diceEditText = findViewById(R.id.diceEditText);
         validateBetButton = findViewById(R.id.validateBetButton);
         validateRollButton = findViewById(R.id.validateRollButton);
         resultText = findViewById(R.id.resultText);
+        hintText = findViewById(R.id.hintText);
         contreSiropLayout = findViewById(R.id.contreSiropLayout);
         playerSpinner = findViewById(R.id.playerSpinner);
         backButton = findViewById(R.id.backButton);
@@ -58,14 +61,16 @@ public class SiroterActivity extends AppCompatActivity {
         game = GameData.getInstance();
         siroterScore = new HashMap<>();
 
-        playersAdapter = new PlayersAdapter(game.playerList());
+        ArrayList<Player> otherPlayerList = new ArrayList<>(game.playerList());
+        otherPlayerList.remove(game.currentPlayer());
+        playersAdapter = new PlayersAdapter(otherPlayerList);
         playersListView.setAdapter(playersAdapter);
 
         validateBetButton.setOnClickListener(v -> validateBets());
         validateRollButton.setOnClickListener(v -> validateRoll());
         backButton.setOnClickListener(v -> backToMainActivity());
 
-        ArrayList<Player> playerItems = new ArrayList<>(game.playerList());
+        ArrayList<Player> playerItems = new ArrayList<>(otherPlayerList);
         playerItems.add(0, new Player(getString(R.string.no_one)));
 
         ArrayAdapter<Player> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, playerItems);
@@ -74,6 +79,17 @@ public class SiroterActivity extends AppCompatActivity {
     }
 
     private void validateBets() {
+        // Avoid going out of screen with lot of player
+        if (playersAdapter.getCount() > 3) {
+            View item = playersAdapter.getView(0, null, playersListView);
+            item.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            int itemHeight = item.getMeasuredHeight();
+
+            ViewGroup.LayoutParams params = playersListView.getLayoutParams();
+            params.height = (int) (3.5 * itemHeight);
+            playersListView.setLayoutParams(params);
+        }
+
         playersAdapter.disableSpinners();
         validateBetButton.setEnabled(false);
         diceEditText.setVisibility(View.VISIBLE);
@@ -106,20 +122,22 @@ public class SiroterActivity extends AppCompatActivity {
                         civet = true;
                     }
                 }
-            }
-
-            int bet = playersAdapter.getPlayerChoice(player);
-            if (bet != 0) {
-                score -= 5;
-                if (bet == diceValue) {
-                    score += 30;
+            } else {
+                int bet = playersAdapter.getPlayerChoice(player);
+                if (bet != 0) {
+                    score -= 5;
+                    if (bet == diceValue) {
+                        score += 30;
+                    }
                 }
             }
             siroterScore.put(player, score);
         }
 
+        hintText.setVisibility(View.GONE);
         validateRollButton.setEnabled(false);
-        backButton.setVisibility(View.VISIBLE);
+        backButton.setEnabled(true);
+
         resultText.setVisibility(View.VISIBLE);
         resultText.setText(String.format("%s%s%s",
                 currentPlayer.name(),

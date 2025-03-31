@@ -20,8 +20,7 @@
         android:id="@+id/validateBetButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/validate_bet"
-        android:enabled="true" />
+        android:text="@string/validate_bet" />
 
     <com.example.culdechouette.DiceEditText
         android:id="@+id/diceEditText"
@@ -49,7 +48,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="start"
         android:paddingVertical="8dp"
         android:visibility="gone">
 
@@ -63,8 +61,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="start">
+            android:orientation="horizontal">
 
             <Spinner
                 android:id="@+id/playerSpinner"
@@ -78,10 +75,18 @@
         </LinearLayout>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/hintText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="8dp"
+        android:textSize="@dimen/text_size_small"
+        android:text="@string/siroter_hint" />
+
     <Button
         android:id="@+id/backButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/back_to_game"
-        android:visibility="gone" />
+        android:enabled="false" />
 </LinearLayout>

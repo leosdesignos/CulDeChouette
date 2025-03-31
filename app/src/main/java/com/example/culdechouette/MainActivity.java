@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private DiceEditText dice2EditText;
     private DiceEditText dice3EditText;
     private TextView currentPlayerText;
+    private TextView playingText;
     private TextView resultText;
     private TextView figureText;
     private TextView playersScoreText;
@@ -73,18 +74,9 @@ public class MainActivity extends AppCompatActivity {
                                 soufletteButton.setEnabled(false);
                                 break;
                             case GrelottineActivity.SUBACT_ID:
-                                dice1EditText.setText("");
-                                dice2EditText.setText("");
-                                dice3EditText.setText("");
-                                resultText.setText(R.string.zero);
-                                figureText.setText(R.string.none_e);
-                                nextTurnButton.setEnabled(false);
-                                validateRollButton.setEnabled(true);
-                                grelottineButton.setEnabled(false);
+                                resetUI();
                                 civetButton.setEnabled(false);
-                                civetLayout.setVisibility(View.GONE);
-                                currentPlayerText.setText(game.currentPlayer().name());
-                                dice1EditText.focus();
+                                playingText.setText(R.string.playing_grelottine);
                                 break;
                             case ChouetteVeluteActivity.SUBACT_ID:
                             case SuiteActivity.SUBACT_ID:
@@ -104,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         dice2EditText = findViewById(R.id.dice2);
         dice3EditText = findViewById(R.id.dice3);
         currentPlayerText = findViewById(R.id.currentPlayerText);
+        playingText = findViewById(R.id.playingText);
         resultText = findViewById(R.id.resultText);
         figureText = findViewById(R.id.figureText);
         playersScoreText = findViewById(R.id.playersScoreText);
@@ -127,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
         game = GameData.getInstance();
         currentPlayerText.setText(game.currentPlayer().name());
+        playingText.setText(R.string.playing);
 
         validateRollButton.setOnClickListener(v -> validateRoll());
         siroterButton.setOnClickListener(v -> showSiroterPopup());
@@ -195,8 +189,24 @@ public class MainActivity extends AppCompatActivity {
         checkGrelottine();
         game.endRound();
         updatePlayersScore();
+        resetUI();
+        checkWinner();
+    }
 
-        // Réinitialiser les champs de dés et le score
+    private void updateFigureScore() {
+        figureText.setText(roll.figureName());
+        resultText.setText(String.valueOf(roll.figureScore()));
+    }
+
+    private void updatePlayersScore() {
+        StringBuilder scoresText = new StringBuilder();
+        for (Player player : game.playerList()) {
+            scoresText.append(player.name()).append(" : ").append(player.score()).append("\n");
+        }
+        playersScoreText.setText(scoresText.toString());
+    }
+
+    private void resetUI() {
         dice1EditText.setText("");
         dice2EditText.setText("");
         dice3EditText.setText("");
@@ -212,22 +222,8 @@ public class MainActivity extends AppCompatActivity {
         civetButton.setEnabled(true);
         civetLayout.setVisibility(View.GONE);
         currentPlayerText.setText(game.currentPlayer().name());
+        playingText.setText(R.string.playing);
         dice1EditText.focus();
-
-        checkWinner();
-    }
-
-    private void updateFigureScore() {
-        figureText.setText(roll.figureName());
-        resultText.setText(String.valueOf(roll.figureScore()));
-    }
-
-    private void updatePlayersScore() {
-        StringBuilder scoresText = new StringBuilder();
-        for (Player player : game.playerList()) {
-            scoresText.append(player.name()).append(" : ").append(player.score()).append("\n");
-        }
-        playersScoreText.setText(scoresText.toString());
     }
 
     private void showSiroterPopup() {
@@ -259,11 +255,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayCivet() {
+        civetBet.setText("");
         if (civetLayout.getVisibility() == View.VISIBLE) {
             civetLayout.setVisibility(View.GONE);
             return;
         }
-        civetBet.setText("");
         civetBet.setHint("≤" + Math.max(0, Math.min(game.currentPlayer().score(), 102)));
         civetBet.addTextChangedListener(new TextWatcher() {
             @Override
