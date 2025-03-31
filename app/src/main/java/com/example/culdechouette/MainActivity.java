@@ -24,13 +24,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView currentPlayerText;
     private DiceEditText dice1EditText;
     private DiceEditText dice2EditText;
     private DiceEditText dice3EditText;
+    private TextView currentPlayerText;
     private TextView resultText;
     private TextView figureText;
     private TextView playersScoreText;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private Button siroterButton;
     private Button soufletteButton;
     private Button nextTurnButton;
+    private Button grelottineButton;
     private Button civetButton;
     private EditText civetBet;
     private Spinner civetFigure;
@@ -70,6 +72,20 @@ public class MainActivity extends AppCompatActivity {
                             case SoufletteActivity.SUBACT_ID:
                                 soufletteButton.setEnabled(false);
                                 break;
+                            case GrelottineActivity.SUBACT_ID:
+                                dice1EditText.setText("");
+                                dice2EditText.setText("");
+                                dice3EditText.setText("");
+                                resultText.setText(R.string.zero);
+                                figureText.setText(R.string.none_e);
+                                nextTurnButton.setEnabled(false);
+                                validateRollButton.setEnabled(true);
+                                grelottineButton.setEnabled(false);
+                                civetButton.setEnabled(false);
+                                civetLayout.setVisibility(View.GONE);
+                                currentPlayerText.setText(game.currentPlayer().name());
+                                dice1EditText.focus();
+                                break;
                             case ChouetteVeluteActivity.SUBACT_ID:
                             case SuiteActivity.SUBACT_ID:
                             default:
@@ -84,10 +100,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        currentPlayerText = findViewById(R.id.currentPlayerText);
         dice1EditText = findViewById(R.id.dice1);
         dice2EditText = findViewById(R.id.dice2);
         dice3EditText = findViewById(R.id.dice3);
+        currentPlayerText = findViewById(R.id.currentPlayerText);
         resultText = findViewById(R.id.resultText);
         figureText = findViewById(R.id.figureText);
         playersScoreText = findViewById(R.id.playersScoreText);
@@ -97,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         siroterButton = findViewById(R.id.siroterButton);
         soufletteButton = findViewById(R.id.soufletteButton);
         nextTurnButton = findViewById(R.id.nextTurnButton);
+        grelottineButton = findViewById(R.id.grelottineButton);
         civetButton = findViewById(R.id.civetButton);
         civetBet = findViewById(R.id.civetBet);
         civetFigure = findViewById(R.id.civetFigure);
@@ -115,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
         siroterButton.setOnClickListener(v -> showSiroterPopup());
         soufletteButton.setOnClickListener(v -> showSouflettePopup());
         nextTurnButton.setOnClickListener(v -> nextTurn());
+        grelottineButton.setOnClickListener(v -> showGrelottinePopup());
         civetButton.setOnClickListener(v -> displayCivet());
 
         dice1EditText.focus();
@@ -163,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 if (currentPlayer.setGrelottine(true)) {
                     Toast.makeText(this, R.string.grelottine_acq, Toast.LENGTH_SHORT).show();
                 }
+                grelottineButton.setEnabled(true);
                 break;
             default:
                 break;
@@ -173,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void nextTurn() {
         checkCivet();
+        checkGrelottine();
         game.endRound();
         updatePlayersScore();
 
@@ -188,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
         siroterButton.setVisibility(View.GONE);
         soufletteButton.setEnabled(true);
         soufletteButton.setVisibility(View.GONE);
+        grelottineButton.setEnabled(false);
         civetButton.setEnabled(true);
         civetLayout.setVisibility(View.GONE);
         currentPlayerText.setText(game.currentPlayer().name());
@@ -228,6 +249,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void showSouflettePopup() {
         Intent intent = new Intent(this, SoufletteActivity.class);
+        subActivity.launch(intent);
+    }
+
+    private void showGrelottinePopup() {
+        checkCivet(); // Before current player change
+        Intent intent = new Intent(this, GrelottineActivity.class);
         subActivity.launch(intent);
     }
 
@@ -286,6 +313,20 @@ public class MainActivity extends AppCompatActivity {
             game.addRoundScore(player, success ? civetBetValue : -civetBetValue);
         }
         civetBet.setText("");
+    }
+
+    private void checkGrelottine() {
+        GameData.Grelottine grelottine = game.grelottine();
+        if (!grelottine.enabled) {
+            return;
+        }
+        boolean success = roll.figure().equals(grelottine.figure);
+
+        game.addRoundScore(grelottine.targeted, success ? grelottine.stake : -grelottine.stake);
+        game.addRoundScore(grelottine.targeting, success ? -grelottine.stake : grelottine.stake);
+        for (Map.Entry<Player, Boolean> playerBet : grelottine.bets.entrySet()) {
+            game.addRoundScore(playerBet.getKey(), playerBet.getValue() == success ? 10 : -5);
+        }
     }
 
     private void checkWinner() {

@@ -3,6 +3,7 @@ package com.example.culdechouette;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 public class GameData {
 
@@ -10,6 +11,7 @@ public class GameData {
 
     private static GameData instance;
 
+    private final Grelottine grelottine;
     private final ArrayList<Player> playerList;
     private final HashMap<Player, Integer> roundScore;
 
@@ -17,6 +19,7 @@ public class GameData {
 
     private GameData() {
         this.currentPlayerIndex = 0;
+        this.grelottine = new Grelottine();
         this.playerList = new ArrayList<>();
         this.roundScore = new HashMap<>();
     }
@@ -43,6 +46,8 @@ public class GameData {
         if (currentPlayerIndex >= playerList.size()) {
             currentPlayerIndex = 0;
         }
+
+        grelottine.enabled = false;
     }
 
     public void bevue(Player player) {
@@ -57,7 +62,8 @@ public class GameData {
     }
 
     public Player currentPlayer() {
-        return playerList.get(currentPlayerIndex);
+        int index = grelottine.enabled ? grelottine.targetedIndex : currentPlayerIndex;
+        return playerList.get(index);
     }
 
     public ArrayList<Player> playerList() {
@@ -74,9 +80,37 @@ public class GameData {
         return rankedPlayerList().get(0).score() >= GOAL;
     }
 
+    public Grelottine grelottine() {
+        return grelottine;
+    }
+
 //    public void log(Player player, Roll roll) {
 //        // TODO log game events
 //    }
+
+
+    public class Grelottine {
+        public boolean enabled = false;
+        private int targetedIndex;
+
+        public Player targeted;
+        public Player targeting;
+
+        public int stake;
+        public Roll.Figure figure;
+        public Map<Player, Boolean> bets;
+
+        public void start(Player targeted, Player targeting,
+                          Map<Player, Boolean> bets, Roll.Figure figure, int stake) {
+            this.enabled = true;
+            this.targetedIndex = playerList.indexOf(targeted);
+            this.targeted = targeted;
+            this.targeting = targeting;
+            this.figure = figure;
+            this.stake = stake;
+            this.bets = bets;
+        }
+    }
 
 }
 

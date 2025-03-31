@@ -32,6 +32,9 @@
             android:name=".SoufletteActivity"
             android:label="@string/souflette" />
         <activity
+            android:name=".GrelottineActivity"
+            android:label="@string/grelottine" />
+        <activity
             android:name=".SummaryActivity"
             android:label="@string/summary"/>
     </application>

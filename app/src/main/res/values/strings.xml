@@ -4,12 +4,15 @@
     <string name="chouette_velute">Chouette Velute</string>
     <string name="suite">Suite</string>
     <string name="souflette">Souflette</string>
+    <string name="grelottine">Grelottine</string>
     <string name="summary">Résumé</string>
 
     <string name="start">Commencer la partie</string>
     <string name="add_player">Ajouter un joueur</string>
     <string name="validate_roll">Valider le jet</string>
     <string name="validate_bet">Valider les paris</string>
+    <string name="validate_challenge">Valider le défi</string>
+    <string name="start_challenge">Démarrer le défi</string>
     <string name="back_to_game">Revenir au jeu</string>
     <string name="next_turn">Tour suivant</string>
     <string name="civet">Civet</string>
@@ -36,9 +39,12 @@
     <string name="dice2">Dé 2</string>
     <string name="dice3">Dé 3</string>
     <string name="wrong_dice_input">Lancer invalide</string>
+    <string name="wrong_bet_input">Mise invalide</string>
+    <string name="wrong_select_input">Selection invalide</string>
     <string name="grelottine_acq">Grelottine acquise !</string>
     <string name="civet_acq">Civet acquis !</string>
     <string name="bevue_civet">Bévue ! Tu n\'as pas de civet !</string>
+    <string name="bevue_grelottine">Bévue ! Tu n\'as pas de grelottine !</string>
     <string name="playing">\ est en train de jouer</string>
     <string name="figure">Figure :\ </string>
     <string name="score">Score :\ </string>
@@ -50,6 +56,7 @@
     <string name="chouette_velute_expression">a trouvé un dur caillou !</string>
     <string name="suite_expression">ça picotte !</string>
     <string name="civet_expression">Civet de</string>
+    <string name="grelottine_expression">Grelottine de</string>
     <string name="on">sur</string>
     <string name="loose">perd</string>
     <string name="challenge">\ défie</string>
@@ -62,6 +69,7 @@
     <string name="suite_hint">Tous les joueurs doivent taper du poing sur la table en criant : \"Grelotte ça picote !\". Le dernier joueur à le faire perd 10 points. \nEn cas d\'égalité, les joueurs concernés se départagent en criant : \"Sans fin est la moisissure des bières bretonnes !\". \nS\'il y a toujours égalité, les joueurs concernés se départagent en lançant chacun un dé, c\’est celui qui aura fait le plus petit score qui perdra les 10 points. S\’il y a plusieurs joueurs qui ont fait le plus petit score, ils recommencent pour se départager, mais cette fois pour perdre 20 points (puis 30 points, etc).</string>
     <string name="souflette_hint">Le joueur peut défier un autre joueur de son choix. Ce joueur a alors trois jets de dés pour réaliser lui aussi un 421. Les éventuels points donnés par d\'éventuelles combinaisons réalisées lors de ces éventuels jets ne sont pas comptés. Les joueurs peuvent conserver les dés ayant donné 4, 2 ou 1 entre chaque lancer, pour ainsi éviter de les relancer et avoir plus de chances de réussir le défi. \nSi le joueur défié réussit à faire 421 : \n- du premier coup, il gagne 50 points et le défiant les perd. \n- du deuxième coup, il gagne 40 points et le défiant les perd. \n- du troisième coup, il gagne 30 points et le défiant les perd. \nSi le joueur défié échoue, il perd 30 points et le défiant les gagne.</string>
     <string name="civet_hint">Lorsqu\'un joueur a gagné un Civet, il peut l\'utiliser quand bon lui semble si son score est positif, avant de lancer ses deux premiers dés. Il mise alors un certain nombre de ses points (102 maximum), et parie sur son prochain coup (Chouette, Velute, Chouette Velute, Suite, ou Cul de Chouette). Dans le cas d\'un Cul de Chouette, il doit préciser avec ou sans Sirotage.</string>
+    <string name="grelottine_hint">Lorsqu\’un joueur réalise un Néant, un autre joueur, s\'il a une Grelottine, peut décider de le défier en criant "Grelottine !". Si plusieurs joueurs crient "Grelottine !" simultanément, c\’est celui qui a le plus petit score qui est prioritaire. \nLe joueur défiant choisit alors une figure que le joueur défié devra réaliser. Le nombre maximal de points mis en jeu dépend du score du défié, du défiant et de la figure choisie. Si le joueur défié réalise la combinaison demandée, il gagne les points mis en jeu, et le défiant les perd, sinon l\'inverse se produit. \nQuoi qu\'il en soit, le joueur défié gagne les points de la combinaison qu\’il a réalisé. Les autres joueurs peuvent miser (-5 pts) sur la réussite du défi (+10 pts à gagner). Enfin, les Grelottines des deux joueurs impliqués disparaissent.</string>
 
     <string-array name="dice_options">
         <item>Aucun</item>
@@ -88,5 +96,10 @@
         <item>souffle du premier coup</item>
         <item>souffle en deux coups</item>
         <item>souffle en trois coups</item>
+    </string-array>
+    <string-array name="grelottine_options">
+        <item>Aucun</item>
+        <item>Réussi</item>
+        <item>Echoue</item>
     </string-array>
 </resources>
