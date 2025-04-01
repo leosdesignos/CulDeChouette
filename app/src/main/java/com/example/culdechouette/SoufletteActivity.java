@@ -54,8 +54,11 @@ public class SoufletteActivity extends AppCompatActivity {
         playerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                player2Text.setText(((Player) spinnerAdapter.getItem(position)).name());
+                player2Text.setText(spinnerAdapter.getItem(position).name());
                 soufletteLayout.setVisibility(position != 0 ? View.VISIBLE : View.GONE);
+                if (position != 0) {
+                    resultSpinner.performClick();
+                }
             }
 
             @Override
@@ -66,6 +69,8 @@ public class SoufletteActivity extends AppCompatActivity {
                 this, R.array.souflette_options, android.R.layout.simple_spinner_item);
         spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
         resultSpinner.setAdapter(spinnerAdapter2);
+
+        playerSpinner.post(() -> playerSpinner.performClick());
     }
 
     private void backToMainActivity() {

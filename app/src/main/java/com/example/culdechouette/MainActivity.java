@@ -249,6 +249,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showGrelottinePopup() {
+        int worstScore = game.rankedPlayerList().get(game.playerList().size() - 1).score();
+        if (worstScore < 0) {
+            Toast.makeText(this, R.string.player_score_neg, Toast.LENGTH_SHORT).show();
+            return;
+        }
         checkCivet(); // Before current player change
         Intent intent = new Intent(this, GrelottineActivity.class);
         subActivity.launch(intent);
@@ -322,6 +327,9 @@ public class MainActivity extends AppCompatActivity {
         game.addRoundScore(grelottine.targeting, success ? -grelottine.stake : grelottine.stake);
         for (Map.Entry<Player, Boolean> playerBet : grelottine.bets.entrySet()) {
             game.addRoundScore(playerBet.getKey(), playerBet.getValue() == success ? 10 : -5);
+        }
+        if (success) {
+            grelottine.targeted.setPasseGrelot(true);
         }
     }
 

@@ -40,6 +40,7 @@ public class ChouetteVeluteActivity extends AppCompatActivity {
         ArrayAdapter<Player> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, playerItems);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
         playerSpinner.setAdapter(spinnerAdapter);
+        playerSpinner.post(() -> playerSpinner.performClick());
     }
 
     private void backToMainActivity() {

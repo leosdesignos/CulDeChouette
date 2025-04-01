@@ -38,6 +38,7 @@ public class GrelottineActivity extends AppCompatActivity {
     private LinearLayout grelottineLayout;
 
     private int maxBet = 0;
+    private boolean passegrelot = false;
     private Player targetedPlayer;
     private Player targetingPlayer;
     private GameData game;
@@ -133,10 +134,13 @@ public class GrelottineActivity extends AppCompatActivity {
                 }
             }
         });
+
+        playerSpinner.post(() -> playerSpinner.performClick());
     }
 
     private void validateTarget() {
-        if (playerSpinner.getSelectedItem().equals(player2Spinner.getSelectedItem())) {
+        if (playerSpinner.getSelectedItem().equals(player2Spinner.getSelectedItem())
+        || (passegrelot && targetedPlayer == player2Spinner.getSelectedItem())) {
             Toast.makeText(this, R.string.wrong_select_input, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -150,7 +154,8 @@ public class GrelottineActivity extends AppCompatActivity {
             finish();
             return;
         }
-        validateButton.setEnabled(false);
+        validateButton.setText(passegrelot ? R.string.validate_challenge : R.string.passe_grelot);
+        validateButton.setEnabled(!passegrelot);
         playerSpinner.setEnabled(false);
         player2Spinner.setEnabled(false);
 
@@ -159,9 +164,38 @@ public class GrelottineActivity extends AppCompatActivity {
         otherPlayerList.remove(targetingPlayer);
         playersAdapter = new PlayersAdapter(otherPlayerList);
         playersListView.setAdapter(playersAdapter);
+        playersListView.setVisibility(View.VISIBLE);
 
         grelottineLayout.setVisibility(View.VISIBLE);
         startButton.setEnabled(true);
+
+        validateButton.setOnClickListener(v -> passeGrelot());
+    }
+
+    private void passeGrelot() {
+        if (!targetedPlayer.setPasseGrelot(false)) {
+            game.bevue(targetedPlayer);
+            Toast.makeText(this, R.string.bevue_passe_grelot, Toast.LENGTH_SHORT).show();
+            validateButton.setEnabled(false);
+            return;
+        }
+        if (game.playerList().size() == 2) {
+            targetedPlayer.setGrelottine(false);
+            targetingPlayer.setGrelottine(false);
+            Toast.makeText(this, R.string.passe_grelot_cancel, Toast.LENGTH_SHORT).show();
+            setResult(RESULT_CANCELED);
+            finish();
+            return;
+        }
+        passegrelot = true;
+
+        grelottineLayout.setVisibility(View.GONE);
+        playersListView.setVisibility(View.INVISIBLE);
+        startButton.setEnabled(false);
+        validateButton.setText(R.string.validate_challenge);
+        validateButton.setOnClickListener(v -> validateTarget());
+        player2Spinner.setEnabled(true);
+        player2Spinner.performClick();
     }
 
     private void backToMainActivity() {

@@ -146,6 +146,7 @@ public class SiroterActivity extends AppCompatActivity {
 
         if (!success) {
             contreSiropLayout.setVisibility(View.VISIBLE);
+            playerSpinner.performClick();
         }
     }
 

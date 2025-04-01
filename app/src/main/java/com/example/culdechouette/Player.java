@@ -6,14 +6,18 @@ public class Player {
     private final String playerName;
 
     private int score;
-    private boolean grelottine;
     private boolean civet;
+    private boolean grelottine;
+    private boolean passegrelot;
+    private boolean passegrelotConsumed;
 
     Player(String playerName) {
         this.playerName = playerName;
         this.score = 0;
-        this.grelottine = false;
         this.civet = false;
+        this.grelottine = false;
+        this.passegrelot = false;
+        this.passegrelotConsumed = false;
     }
 
     public String name() {
@@ -45,6 +49,18 @@ public class Player {
     public boolean setCivet(boolean civet) {
         boolean toggled = this.civet != civet;
         this.civet = civet;
+        return toggled;
+    }
+
+    public boolean setPasseGrelot (boolean passegrelot) {
+        if (passegrelotConsumed) {
+            return false;
+        }
+        boolean toggled = this.passegrelot != passegrelot;
+        this.passegrelot = passegrelot;
+        if (toggled && !passegrelot) {
+            passegrelotConsumed = true;
+        }
         return toggled;
     }
 

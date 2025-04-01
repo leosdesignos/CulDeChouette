@@ -57,6 +57,8 @@ public class SuiteActivity extends AppCompatActivity {
                 this, R.array.suite_loose_options, android.R.layout.simple_spinner_item);
         spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
         pointSpinner.setAdapter(spinnerAdapter2);
+
+        playerSpinner.post(() -> playerSpinner.performClick());
     }
 
     private void backToMainActivity() {
