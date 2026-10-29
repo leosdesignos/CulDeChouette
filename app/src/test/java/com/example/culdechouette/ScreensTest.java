@@ -9,6 +9,7 @@ import static org.robolectric.Shadows.shadowOf;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Looper;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -180,6 +181,63 @@ public class ScreensTest {
         assertTrue(activity.isFinishing());
         assertEquals(36 + 70, store().game().player(0).score());
         assertEquals(25 + 20, store().game().player(1).score());
+    }
+
+    @Test
+    public void suiteScreenMakesTheLastPlayerLosePoints() {
+        newGame("Arthur", "Bohort");
+        store().run(game -> game.roll(4, 5, 6));
+        SuiteActivity activity = Robolectric.buildActivity(SuiteActivity.class).setup().get();
+        assertFalse(activity.findViewById(R.id.validateButton).isEnabled());
+
+        ((Spinner) activity.findViewById(R.id.playerSpinner)).setSelection(1);
+        ((Spinner) activity.findViewById(R.id.pointSpinner)).setSelection(1);
+        shadowOf(Looper.getMainLooper()).idle();
+        activity.findViewById(R.id.validateButton).performClick();
+
+        assertTrue(activity.isFinishing());
+        assertEquals(-20, store().game().player(0).score());
+    }
+
+    @Test
+    public void souffletteScreenSettlesTheChallenge() {
+        newGame("Arthur", "Bohort");
+        store().run(game -> game.roll(4, 2, 1));
+        SouffletteActivity activity = Robolectric.buildActivity(SouffletteActivity.class).setup().get();
+
+        ((Spinner) activity.findViewById(R.id.playerSpinner)).setSelection(1);
+        shadowOf(Looper.getMainLooper()).idle();
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.souffletteLayout).getVisibility());
+        ((Spinner) activity.findViewById(R.id.resultSpinner)).setSelection(2);
+        activity.findViewById(R.id.validateButton).performClick();
+
+        assertTrue(activity.isFinishing());
+        assertEquals(40, store().game().player(1).score());
+        assertEquals(-40, store().game().player(0).score());
+    }
+
+    @Test
+    public void civetAnnouncedWithoutCivetIsABevue() {
+        newGame("Arthur", "Bohort");
+        store().run(game -> {
+            game.roll(6, 6, 1);
+            game.endTurn();
+            game.roll(1, 3, 6);
+            game.endTurn();
+        });
+        MainActivity activity = Robolectric.buildActivity(MainActivity.class).setup().get();
+
+        activity.findViewById(R.id.civetButton).performClick();
+        assertEquals(View.VISIBLE, activity.findViewById(R.id.civetLayout).getVisibility());
+        EditText stake = activity.findViewById(R.id.civetBet);
+        stake.setText("999");
+        assertEquals("36", stake.getText().toString());
+        enterDice(activity, 3, 3, 4);
+        activity.findViewById(R.id.validateRollButton).performClick();
+
+        assertEquals(context.getString(R.string.bevue_civet, "Arthur"), ShadowToast.getTextOfLatestToast());
+        assertEquals(36 - 10 + 9, store().game().player(0).score());
+        assertEquals(View.GONE, activity.findViewById(R.id.civetButton).getVisibility());
     }
 
     @Test
