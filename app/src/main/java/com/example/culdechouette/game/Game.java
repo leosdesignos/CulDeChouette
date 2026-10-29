@@ -150,13 +150,23 @@ public final class Game implements Serializable {
         return turn.grelottineChallenger != NOBODY || (otherPlayers().size() >= 2 && allScoresPositive());
     }
 
+    /** Whether the owner of the turn can still pass the challenge announced. */
+    public boolean canPasseGrelot() {
+        return canGrelottine() && turn.grelottineChallenger != NOBODY
+                && turn.passeGrelotBy == NOBODY && !turn.passeGrelotRefused;
+    }
+
     public int maxGrelottineStake(int challenger, int target, Figure figure) {
         int lowest = Math.min(players.get(challenger).score, players.get(target).score);
         return Math.max(0, lowest) * figure.grelottinePercent() / 100;
     }
 
     public boolean canEndTurn() {
-        return !isOver() && turn.roll != null && !turn.chouetteVelutePending && !turn.suitePending;
+        // A Grelottine challenge announced has to be taken up
+        boolean grelottineSettled = turn.grelottineChallenger == NOBODY || turn.grelottine != null
+                || turn.grelottineCancelled;
+        return !isOver() && turn.roll != null && !turn.chouetteVelutePending && !turn.suitePending
+                && grelottineSettled;
     }
 
     // ---------------------------------------------------------------- Actions
@@ -317,13 +327,13 @@ public final class Game implements Serializable {
 
     /** The owner of the turn passes the challenge announced to someone else. */
     public Outcome passeGrelot() {
-        check(canGrelottine() && turn.grelottineChallenger != NOBODY && turn.passeGrelotBy == NOBODY,
-                "No Passe-Grelot now");
+        check(canPasseGrelot(), "No Passe-Grelot now");
         int challenger = turn.grelottineChallenger;
         int target = turn.owner();
         Player player = players.get(target);
         if (player.passeGrelot != Player.PasseGrelot.AVAILABLE) {
             bevue(target, GameEvent.Type.BEVUE_NO_PASSE_GRELOT);
+            turn.passeGrelotRefused = true;
             return Outcome.BEVUE;
         }
         player.passeGrelot = Player.PasseGrelot.USED;

@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout winnerLayout;
 
     private GameStore store;
+    /** Set while another screen is being opened, so a double tap doesn't open it twice. */
+    private boolean opening;
     private boolean civetOpen;
     /** Identifies who is about to throw the dice, to clear the inputs when it changes. */
     private int rollKey = -1;
@@ -118,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        opening = false;
         if (GameStore.gameOrRestart(this) != null) {
             render();
         }
@@ -258,6 +261,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void validateRoll() {
+        if (!game().canRoll()) {
+            return;
+        }
         if (dice1EditText.isEmpty() || dice2EditText.isEmpty() || dice3EditText.isEmpty()) {
             Ui.toast(this, R.string.wrong_dice_input);
             return;
@@ -304,6 +310,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void nextTurn() {
+        if (!game().canEndTurn()) {
+            return;
+        }
         store.run(Game::endTurn);
         render();
         if (!game().isOver()) {
@@ -361,6 +370,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void open(Class<?> activity) {
+        if (opening) {
+            return;
+        }
+        opening = true;
         startActivity(new Intent(this, activity));
     }
 }

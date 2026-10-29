@@ -71,10 +71,13 @@ public class SouffletteActivity extends AppCompatActivity {
     }
 
     private void validate() {
+        if (isFinishing()) {
+            return;
+        }
         int target = playerSpinner.selected();
         if (target != Game.NOBODY) {
             int throwsNeeded = resultSpinner.getSelectedItemPosition();
-            store.run(game -> game.soufflette(target, throwsNeeded));
+            store.tryRun(game -> game.soufflette(target, throwsNeeded));
         }
         finish();
     }

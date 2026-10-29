@@ -36,8 +36,11 @@ public class ChouetteVeluteActivity extends AppCompatActivity {
     }
 
     private void validate() {
+        if (isFinishing()) {
+            return;
+        }
         int player = playerSpinner.selected();
-        store.run(game -> game.claimChouetteVelute(player));
+        store.tryRun(game -> game.claimChouetteVelute(player));
         finish();
     }
 }

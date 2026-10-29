@@ -184,6 +184,51 @@ public class ScreensTest {
     }
 
     @Test
+    public void sirotageBetsSurviveRecreation() {
+        newGame("Arthur", "Bohort", "Calogrenant");
+        store().run(game -> {
+            game.roll(1, 3, 6);
+            game.endTurn();
+            game.roll(5, 5, 1);
+            game.endTurn();
+            game.roll(4, 4, 1);
+            game.endTurn();
+            game.roll(3, 3, 4);
+        });
+        ActivityController<SiroterActivity> controller = Robolectric.buildActivity(SiroterActivity.class).setup();
+        betSpinner(controller.get(), 0).setSelection(1);
+        betSpinner(controller.get(), 1).setSelection(5);
+
+        controller.recreate();
+        SiroterActivity activity = controller.get();
+        assertEquals(1, betSpinner(activity, 0).getSelectedItemPosition());
+        assertEquals(5, betSpinner(activity, 1).getSelectedItemPosition());
+        activity.findViewById(R.id.validateBetButton).performClick();
+        ((EditText) activity.findViewById(R.id.diceEditText)).setText("1");
+        activity.findViewById(R.id.validateButton).performClick();
+
+        assertEquals(25 + 20, store().game().player(1).score());
+        assertEquals(16 - 5, store().game().player(2).score());
+    }
+
+    @Test
+    public void screenOpenedTwiceDoesNotApplyTheActionTwice() {
+        newGame("Arthur", "Bohort");
+        store().run(game -> game.roll(3, 3, 4));
+        SiroterActivity first = Robolectric.buildActivity(SiroterActivity.class).setup().get();
+        SiroterActivity second = Robolectric.buildActivity(SiroterActivity.class).setup().get();
+
+        for (SiroterActivity activity : Arrays.asList(first, second)) {
+            activity.findViewById(R.id.validateBetButton).performClick();
+            ((EditText) activity.findViewById(R.id.diceEditText)).setText("3");
+            activity.findViewById(R.id.validateButton).performClick();
+            activity.findViewById(R.id.validateButton).performClick();
+            assertTrue(activity.isFinishing());
+        }
+        assertEquals(70, store().game().player(0).score());
+    }
+
+    @Test
     public void suiteScreenMakesTheLastPlayerLosePoints() {
         newGame("Arthur", "Bohort");
         store().run(game -> game.roll(4, 5, 6));
@@ -320,6 +365,11 @@ public class ScreensTest {
         ((EditText) activity.findViewById(R.id.dice1)).setText(String.valueOf(dice1));
         ((EditText) activity.findViewById(R.id.dice2)).setText(String.valueOf(dice2));
         ((EditText) activity.findViewById(R.id.dice3)).setText(String.valueOf(dice3));
+    }
+
+    private static Spinner betSpinner(Activity activity, int row) {
+        LinearLayout bets = activity.findViewById(R.id.betsLayout);
+        return bets.getChildAt(row).findViewById(R.id.choiceSpinner);
     }
 
     private static String text(Activity activity, int id) {

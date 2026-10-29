@@ -27,7 +27,6 @@ public class GrelottineActivity extends AppCompatActivity {
     private static final String STATE_STEP = "step";
     private static final String STATE_CHALLENGER = "challenger";
     private static final String STATE_TARGET = "target";
-    private static final String STATE_PASSE_REFUSED = "passeRefused";
     private static final String STATE_BETTORS = "bettors";
 
     private static final int STEP_CHALLENGER = 0;
@@ -60,7 +59,6 @@ public class GrelottineActivity extends AppCompatActivity {
     private int step = STEP_CHALLENGER;
     private int challenger = Game.NOBODY;
     private int target;
-    private boolean passeRefused;
     private boolean[] checkedBettors;
 
     @Override
@@ -112,7 +110,6 @@ public class GrelottineActivity extends AppCompatActivity {
             step = savedInstanceState.getInt(STATE_STEP);
             challenger = savedInstanceState.getInt(STATE_CHALLENGER);
             target = savedInstanceState.getInt(STATE_TARGET);
-            passeRefused = savedInstanceState.getBoolean(STATE_PASSE_REFUSED);
             boolean[] checked = savedInstanceState.getBooleanArray(STATE_BETTORS);
             if (checked != null) {
                 checkedBettors = checked;
@@ -138,7 +135,6 @@ public class GrelottineActivity extends AppCompatActivity {
         outState.putInt(STATE_STEP, step);
         outState.putInt(STATE_CHALLENGER, challenger);
         outState.putInt(STATE_TARGET, target);
-        outState.putBoolean(STATE_PASSE_REFUSED, passeRefused);
         outState.putBooleanArray(STATE_BETTORS, checkedBettors);
     }
 
@@ -151,11 +147,16 @@ public class GrelottineActivity extends AppCompatActivity {
     }
 
     private void validate() {
+        if (isFinishing()) {
+            return;
+        }
         if (step == STEP_CHALLENGER) {
             int selected = challengerSpinner.selected();
-            Game.Outcome outcome = store.perform(game -> game.announceGrelottine(selected));
-            if (outcome == Game.Outcome.BEVUE) {
-                Ui.toast(this, R.string.bevue_grelottine, name(selected));
+            Game.Outcome outcome = store.tryPerform(game -> game.announceGrelottine(selected));
+            if (outcome != Game.Outcome.OK) {
+                if (outcome == Game.Outcome.BEVUE) {
+                    Ui.toast(this, R.string.bevue_grelottine, name(selected));
+                }
                 finish();
                 return;
             }
@@ -169,14 +170,19 @@ public class GrelottineActivity extends AppCompatActivity {
     }
 
     private void passeGrelot() {
-        Game.Outcome outcome = store.perform(Game::passeGrelot);
-        if (outcome == Game.Outcome.BEVUE) {
-            Ui.toast(this, R.string.bevue_passe_grelot, name(owner));
-            passeRefused = true;
-        } else if (outcome == Game.Outcome.CANCELLED) {
-            Ui.toast(this, R.string.passe_grelot_cancel);
+        if (isFinishing()) {
+            return;
+        }
+        Game.Outcome outcome = store.tryPerform(Game::passeGrelot);
+        if (outcome == null || outcome == Game.Outcome.CANCELLED) {
+            if (outcome != null) {
+                Ui.toast(this, R.string.passe_grelot_cancel);
+            }
             finish();
             return;
+        }
+        if (outcome == Game.Outcome.BEVUE) {
+            Ui.toast(this, R.string.bevue_passe_grelot, name(owner));
         } else {
             step = STEP_NEW_TARGET;
         }
@@ -184,6 +190,9 @@ public class GrelottineActivity extends AppCompatActivity {
     }
 
     private void start() {
+        if (isFinishing()) {
+            return;
+        }
         if (grelottineBet.getText().length() == 0) {
             Ui.toast(this, R.string.wrong_bet_input);
             return;
@@ -202,9 +211,11 @@ public class GrelottineActivity extends AppCompatActivity {
         }
         try {
             store.run(game -> game.startGrelottine(target, figure, stake, bettorIndexes));
-        } catch (IllegalArgumentException | IllegalStateException e) {
+        } catch (IllegalArgumentException e) {
             Ui.toast(this, R.string.wrong_bet_input);
             return;
+        } catch (IllegalStateException e) {
+            // Started from another screen in the meantime
         }
         finish();
     }
@@ -231,8 +242,8 @@ public class GrelottineActivity extends AppCompatActivity {
         validateButton.setVisibility(challenge ? View.GONE : View.VISIBLE);
         validateButton.setText(chooseChallenger ? R.string.validate_challenge : R.string.validate);
 
-        passeGrelotButton.setVisibility(challenge && target == owner && !passeRefused
-                && game.turn().passeGrelotBy() == Game.NOBODY ? View.VISIBLE : View.GONE);
+        passeGrelotButton.setVisibility(challenge && target == owner && game.canPasseGrelot()
+                ? View.VISIBLE : View.GONE);
         grelottineLayout.setVisibility(challenge ? View.VISIBLE : View.GONE);
         startButton.setVisibility(challenge ? View.VISIBLE : View.GONE);
         if (challenge) {

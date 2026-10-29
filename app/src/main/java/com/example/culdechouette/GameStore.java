@@ -123,6 +123,28 @@ public final class GameStore {
         });
     }
 
+    /**
+     * Like {@link #perform}, for screens whose action may no longer be allowed, e.g. a screen
+     * opened twice. Returns null when the game refused the action.
+     */
+    @Nullable
+    public <T> T tryPerform(Action<T> action) {
+        try {
+            return perform(action);
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            Log.w(TAG, "Action refused", e);
+            return null;
+        }
+    }
+
+    /** Like {@link #run}, returns false when the game refused the action. */
+    public boolean tryRun(Command command) {
+        return tryPerform(game -> {
+            command.run(game);
+            return Boolean.TRUE;
+        }) != null;
+    }
+
     public boolean canUndo() {
         return game != null && !undoStack.isEmpty();
     }

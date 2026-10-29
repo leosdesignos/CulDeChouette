@@ -72,6 +72,8 @@ public class SiroterActivity extends AppCompatActivity {
             ((TextView) row.findViewById(R.id.playerNameTextView)).setText(game.player(player).name());
             Spinner spinner = row.findViewById(R.id.choiceSpinner);
             spinner.setAdapter(diceAdapter);
+            // All rows share the same id: their bets are restored from STATE_BETS instead
+            spinner.setSaveEnabled(false);
             betsLayout.addView(row);
             bettors.add(player);
             betSpinners.add(spinner);
@@ -149,6 +151,9 @@ public class SiroterActivity extends AppCompatActivity {
     }
 
     private void validate() {
+        if (isFinishing()) {
+            return;
+        }
         int die = diceEditText.value();
         if (die == 0) {
             Ui.toast(this, R.string.wrong_dice_input);
@@ -163,9 +168,8 @@ public class SiroterActivity extends AppCompatActivity {
         int contreSirop = die == chouetteValue ? Game.NOBODY : contreSiropSpinner.selected();
         boolean hadCivet = game.player(roller).hasCivet();
 
-        store.run(g -> g.sirote(die, bets, contreSirop));
-
-        if (!hadCivet && store.game().player(roller).hasCivet()) {
+        if (store.tryRun(g -> g.sirote(die, bets, contreSirop))
+                && !hadCivet && store.game().player(roller).hasCivet()) {
             Ui.toast(this, R.string.civet_acq, store.game().player(roller).name());
         }
         finish();

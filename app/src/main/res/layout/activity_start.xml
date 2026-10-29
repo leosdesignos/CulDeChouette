@@ -39,7 +39,8 @@
         style="@style/Hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:text="@string/doublette_hint" />
 
     <Button

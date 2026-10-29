@@ -41,6 +41,8 @@ public final class Turn implements Serializable {
     boolean grelottineCancelled;
     /** Player who passed the Grelottine challenge to someone else, -1 if nobody did. */
     int passeGrelotBy = -1;
+    /** The owner claimed a Passe-Grelot they don't have: they must take the challenge. */
+    boolean passeGrelotRefused;
 
     Turn(int number, int owner) {
         this.number = number;

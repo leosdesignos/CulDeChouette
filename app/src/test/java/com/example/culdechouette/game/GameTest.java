@@ -319,9 +319,25 @@ public class GameTest {
 
         assertEquals(Game.Outcome.BEVUE, game.passeGrelot());
         assertEquals(-10, score(A));
+        assertFalse("A single Bévue per false claim", game.canPasseGrelot());
+        assertThrows(IllegalStateException.class, game::passeGrelot);
         assertTrue(game.canGrelottine());
         game.startGrelottine(A, Figure.CHOUETTE, 0, new int[0]);
         assertEquals(A, game.roller());
+    }
+
+    @Test
+    public void announcedGrelottineMustBeTakenUp() {
+        giveGrelottine(B);
+        game.roll(1, 3, 6);
+        assertTrue(game.canEndTurn());
+
+        game.announceGrelottine(B);
+
+        assertFalse(game.canEndTurn());
+        game.startGrelottine(A, Figure.CHOUETTE, 0, new int[0]);
+        game.roll(3, 3, 4);
+        assertTrue(game.canEndTurn());
     }
 
     @Test

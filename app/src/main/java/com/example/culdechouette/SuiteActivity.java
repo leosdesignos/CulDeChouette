@@ -68,9 +68,12 @@ public class SuiteActivity extends AppCompatActivity {
     }
 
     private void validate() {
+        if (isFinishing()) {
+            return;
+        }
         int player = playerSpinner.selected();
         int multiplier = pointSpinner.getSelectedItemPosition() + 1;
-        store.run(game -> game.loseSuite(player, multiplier));
+        store.tryRun(game -> game.loseSuite(player, multiplier));
         finish();
     }
 }
