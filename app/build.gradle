@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = 'com.example.culdechouette'
+    namespace = 'io.github.leosdesignos.culdechouette'
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.culdechouette"
+        applicationId = "io.github.leosdesignos.culdechouette"
         minSdk = 23
         targetSdk = 36
         versionCode = 1

@@ -88,21 +88,21 @@
                 android:orientation="horizontal"
                 android:gravity="center">
 
-                <com.example.culdechouette.DiceEditText
+                <io.github.leosdesignos.culdechouette.DiceEditText
                     android:id="@+id/dice1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="@string/dice1" />
 
-                <com.example.culdechouette.DiceEditText
+                <io.github.leosdesignos.culdechouette.DiceEditText
                     android:id="@+id/dice2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="@string/dice2" />
 
-                <com.example.culdechouette.DiceEditText
+                <io.github.leosdesignos.culdechouette.DiceEditText
                     android:id="@+id/dice3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
