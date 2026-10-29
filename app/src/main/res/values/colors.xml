@@ -4,7 +4,10 @@
     <color name="primaryColorVariant">#72451C</color>
     <color name="secondaryColor">#8EA2A0</color>
     <color name="secondaryColorVariant">#476C74</color>
-    <color name="textColor">#FAFEFF</color>
+    <!-- Text on the background, contrast ratio of 7:1 -->
+    <color name="textColor">#3B2210</color>
+    <!-- Text on the primary color, contrast ratio of 5.8:1 -->
+    <color name="onPrimaryColor">#FAFEFF</color>
 
     <color name="ic_launcher_background">#BC9B8A</color>
 </resources>

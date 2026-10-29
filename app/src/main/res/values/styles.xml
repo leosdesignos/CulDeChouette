@@ -4,11 +4,12 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryVariant">@color/primaryColorVariant</item>
-        <item name="colorOnPrimary">@color/textColor</item>
+        <item name="colorOnPrimary">@color/onPrimaryColor</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/secondaryColor</item>
         <item name="colorSecondaryVariant">@color/secondaryColorVariant</item>
-        <item name="colorOnSecondary">@color/textColor</item>
+        <item name="colorOnSecondary">@color/onPrimaryColor</item>
+        <item name="colorControlActivated">@color/primaryColorVariant</item>
 
         <item name="android:windowBackground">@color/backgroundColor</item>
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
@@ -16,7 +17,9 @@
         <item name="android:fontFamily">@font/augusta</item>
 
         <item name="android:textSize">@dimen/text_size_normal</item>
-        <item name="android:textColor">@color/textColor</item>
+        <!-- The action bar keeps light text through its own theme overlay -->
+        <item name="android:textColorPrimary">@color/textColor</item>
+        <item name="android:textColorSecondary">@color/textColor</item>
         <item name="android:editTextColor">@color/textColor</item>
 
         <item name="android:spinnerStyle">@style/SpinnerStyle</item>
@@ -25,5 +28,9 @@
     <style name="SpinnerStyle" parent="Widget.AppCompat.Spinner">
         <item name="android:backgroundTint">@color/primaryColor</item>
         <item name="android:popupBackground">@color/backgroundColor</item>
+    </style>
+
+    <style name="Hint">
+        <item name="android:textSize">@dimen/text_size_small</item>
     </style>
 </resources>
