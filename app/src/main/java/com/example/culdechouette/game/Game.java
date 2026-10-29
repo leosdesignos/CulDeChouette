@@ -448,12 +448,11 @@ public final class Game implements Serializable {
         log(success ? GameEvent.Type.GRELOTTINE_WON : GameEvent.Type.GRELOTTINE_LOST,
                 target, targetPoints, challenger, challengerPoints, grelottine.figure(), stake);
 
-        // Winning a challenge gives an immunity, once per game
-        int winnerOfChallenge = success ? target : challenger;
-        Player player = players.get(winnerOfChallenge);
-        if (player.passeGrelot == Player.PasseGrelot.NONE) {
+        // Succeeding a challenge gives an immunity, once per game
+        Player player = players.get(target);
+        if (success && player.passeGrelot == Player.PasseGrelot.NONE) {
             player.passeGrelot = Player.PasseGrelot.AVAILABLE;
-            log(GameEvent.Type.PASSE_GRELOT_GAINED, winnerOfChallenge, 0);
+            log(GameEvent.Type.PASSE_GRELOT_GAINED, target, 0);
         }
 
         for (int bettor : grelottine.bettors()) {

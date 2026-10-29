@@ -231,7 +231,7 @@ public class GameTest {
     }
 
     @Test
-    public void grelottineWinnerCanBeTheChallenger() {
+    public void failedGrelottineGivesNoPasseGrelot() {
         setScore(A, 100);
         setScore(B, 100);
         giveGrelottine(B);
@@ -244,7 +244,8 @@ public class GameTest {
 
         assertEquals(84, score(A));
         assertEquals(116, score(B));
-        assertEquals(Player.PasseGrelot.AVAILABLE, game.player(B).passeGrelot());
+        assertEquals("Only the challenged player who succeeds gets one",
+                Player.PasseGrelot.NONE, game.player(B).passeGrelot());
         assertEquals(Player.PasseGrelot.NONE, game.player(A).passeGrelot());
     }
 
