@@ -34,6 +34,8 @@ public final class Turn implements Serializable {
     Figure civetTarget;
     int civetStake;
 
+    /** Player who announced a Grelottine challenge, -1 if nobody did. */
+    int grelottineChallenger = -1;
     @Nullable
     Grelottine grelottine;
     boolean grelottineCancelled;
@@ -68,13 +70,23 @@ public final class Turn implements Serializable {
         return civetStake;
     }
 
+    /** The challenge in progress, once started. */
     @Nullable
     public Grelottine grelottine() {
         return grelottine;
     }
 
+    public int grelottineChallenger() {
+        return grelottineChallenger;
+    }
+
     public int passeGrelotBy() {
         return passeGrelotBy;
+    }
+
+    /** Whether a Grelottine challenge was cancelled by a Passe-Grelot with only two players. */
+    public boolean isGrelottineCancelled() {
+        return grelottineCancelled;
     }
 
     /** Whether someone still has to be designated as the winner of the Chouette Velute. */

@@ -139,12 +139,15 @@ public final class Game implements Serializable {
         return !isOver() && roll != null && roll.figure() == Figure.SOUFFLETTE && !turn.souffletteDone;
     }
 
-    /** Whether someone can challenge the owner of the turn, who just made a Néant. */
+    /** Whether someone can challenge the owner of the turn, who just made a Néant, or go on with the challenge. */
     public boolean canGrelottine() {
         Roll roll = turn.roll;
-        return !isOver() && turn.grelottine == null && !turn.grelottineCancelled
-                && roll != null && roll.figure() == Figure.NEANT
-                && otherPlayers().size() >= 2 && allScoresPositive();
+        if (isOver() || turn.grelottine != null || turn.grelottineCancelled
+                || roll == null || roll.figure() != Figure.NEANT) {
+            return false;
+        }
+        // Once announced, a challenge goes on even if a Bévue made a score negative
+        return turn.grelottineChallenger != NOBODY || (otherPlayers().size() >= 2 && allScoresPositive());
     }
 
     public int maxGrelottineStake(int challenger, int target, Figure figure) {
@@ -300,22 +303,23 @@ public final class Game implements Serializable {
         turn.souffletteDone = true;
     }
 
-    /** {@code challenger} shouts "Grelottine !": checks they do have a Grelottine. */
-    public Outcome checkGrelottineChallenger(int challenger) {
-        check(canGrelottine(), "No Grelottine now");
+    /** {@code challenger} shouts "Grelottine !", which is a Bévue if they don't have one. */
+    public Outcome announceGrelottine(int challenger) {
+        check(canGrelottine() && turn.grelottineChallenger == NOBODY, "No Grelottine now");
         require(challenger != turn.owner() && isActive(challenger), "Invalid challenger");
         if (!players.get(challenger).grelottine) {
             bevue(challenger, GameEvent.Type.BEVUE_NO_GRELOTTINE);
             return Outcome.BEVUE;
         }
+        turn.grelottineChallenger = challenger;
         return Outcome.OK;
     }
 
-    /** The owner of the turn passes the challenge of {@code challenger} to someone else. */
-    public Outcome passeGrelot(int challenger) {
-        check(canGrelottine() && turn.passeGrelotBy == NOBODY, "No Passe-Grelot now");
-        require(challenger != turn.owner() && isActive(challenger) && players.get(challenger).grelottine,
-                "Invalid challenger");
+    /** The owner of the turn passes the challenge announced to someone else. */
+    public Outcome passeGrelot() {
+        check(canGrelottine() && turn.grelottineChallenger != NOBODY && turn.passeGrelotBy == NOBODY,
+                "No Passe-Grelot now");
+        int challenger = turn.grelottineChallenger;
         int target = turn.owner();
         Player player = players.get(target);
         if (player.passeGrelot != Player.PasseGrelot.AVAILABLE) {
@@ -336,15 +340,14 @@ public final class Game implements Serializable {
     }
 
     /**
-     * Starts the challenge: {@code target} throws the dice next, trying to make {@code figure}.
+     * Starts the challenge announced: {@code target} throws the dice next, trying to make {@code figure}.
      * After a Passe-Grelot, the target is the player the challenge was passed to.
      *
      * @param bettors players betting on the success of the challenge
      */
-    public void startGrelottine(int challenger, int target, Figure figure, int stake, int[] bettors) {
-        check(canGrelottine(), "No Grelottine now");
-        require(challenger != turn.owner() && isActive(challenger) && players.get(challenger).grelottine,
-                "Invalid challenger");
+    public void startGrelottine(int target, Figure figure, int stake, int[] bettors) {
+        check(canGrelottine() && turn.grelottineChallenger != NOBODY, "No Grelottine announced");
+        int challenger = turn.grelottineChallenger;
         boolean passed = turn.passeGrelotBy != NOBODY;
         require(passed ? target != turn.owner() && target != challenger && isActive(target)
                 : target == turn.owner(), "Invalid target");

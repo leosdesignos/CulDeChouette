@@ -213,9 +213,9 @@ public class GameTest {
         assertTrue(game.player(A).hasGrelottine());
         assertTrue(game.canGrelottine());
 
-        assertEquals(Game.Outcome.OK, game.checkGrelottineChallenger(B));
+        assertEquals(Game.Outcome.OK, game.announceGrelottine(B));
         assertEquals(33, game.maxGrelottineStake(B, A, Figure.CHOUETTE));
-        game.startGrelottine(B, A, Figure.CHOUETTE, 33, new int[]{C});
+        game.startGrelottine(A, Figure.CHOUETTE, 33, new int[]{C});
         assertFalse(game.player(A).hasGrelottine());
         assertFalse(game.player(B).hasGrelottine());
         assertEquals(A, game.roller());
@@ -236,7 +236,8 @@ public class GameTest {
         setScore(B, 100);
         giveGrelottine(B);
         game.roll(1, 3, 6);
-        game.startGrelottine(B, A, Figure.CUL_DE_CHOUETTE, 16, new int[0]);
+        game.announceGrelottine(B);
+        game.startGrelottine(A, Figure.CUL_DE_CHOUETTE, 16, new int[0]);
         game.roll(1, 3, 6);
         assertFalse("No Grelottine during a Grelottine", game.canGrelottine());
         game.endTurn();
@@ -252,10 +253,10 @@ public class GameTest {
         setScore(B, 50);
         game.roll(1, 3, 6);
 
-        assertEquals(Game.Outcome.BEVUE, game.checkGrelottineChallenger(B));
+        assertEquals(Game.Outcome.BEVUE, game.announceGrelottine(B));
         assertEquals(40, score(B));
-        assertThrows(IllegalArgumentException.class,
-                () -> game.startGrelottine(B, A, Figure.CHOUETTE, 0, new int[0]));
+        assertThrows(IllegalStateException.class,
+                () -> game.startGrelottine(A, Figure.CHOUETTE, 0, new int[0]));
     }
 
     @Test
@@ -277,14 +278,15 @@ public class GameTest {
         giveGrelottine(B);
         game.roll(1, 3, 6);
 
-        assertEquals(Game.Outcome.OK, game.passeGrelot(B));
+        game.announceGrelottine(B);
+        assertEquals(Game.Outcome.OK, game.passeGrelot());
         assertEquals(Player.PasseGrelot.USED, game.player(A).passeGrelot());
         assertThrows(IllegalArgumentException.class,
-                () -> game.startGrelottine(B, A, Figure.CHOUETTE, 9, new int[0]));
+                () -> game.startGrelottine(A, Figure.CHOUETTE, 9, new int[0]));
         assertThrows(IllegalArgumentException.class,
-                () -> game.startGrelottine(B, C, Figure.CHOUETTE, 66, new int[0]));
+                () -> game.startGrelottine(C, Figure.CHOUETTE, 66, new int[0]));
         assertEquals(9, game.maxGrelottineStake(B, C, Figure.CHOUETTE));
-        game.startGrelottine(B, C, Figure.CHOUETTE, 9, new int[0]);
+        game.startGrelottine(C, Figure.CHOUETTE, 9, new int[0]);
 
         assertEquals(C, game.roller());
         game.roll(2, 3, 6);
@@ -300,8 +302,9 @@ public class GameTest {
         duel.player(A).passeGrelot = Player.PasseGrelot.AVAILABLE;
         duel.player(B).grelottine = true;
         duel.roll(1, 3, 6);
+        duel.announceGrelottine(B);
 
-        assertEquals(Game.Outcome.CANCELLED, duel.passeGrelot(B));
+        assertEquals(Game.Outcome.CANCELLED, duel.passeGrelot());
         assertFalse(duel.player(A).hasGrelottine());
         assertFalse(duel.player(B).hasGrelottine());
         assertFalse(duel.canGrelottine());
@@ -309,12 +312,16 @@ public class GameTest {
     }
 
     @Test
-    public void passeGrelotWithoutImmunityIsABevue() {
+    public void passeGrelotWithoutImmunityIsABevueButTheChallengeGoesOn() {
         giveGrelottine(B);
         game.roll(1, 3, 6);
+        game.announceGrelottine(B);
 
-        assertEquals(Game.Outcome.BEVUE, game.passeGrelot(B));
+        assertEquals(Game.Outcome.BEVUE, game.passeGrelot());
         assertEquals(-10, score(A));
+        assertTrue(game.canGrelottine());
+        game.startGrelottine(A, Figure.CHOUETTE, 0, new int[0]);
+        assertEquals(A, game.roller());
     }
 
     @Test
