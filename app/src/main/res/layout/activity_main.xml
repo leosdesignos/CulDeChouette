@@ -1,228 +1,233 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:fillViewport="true"
     tools:context=".MainActivity">
 
-    <LinearLayout
-        android:id="@+id/gameLayout"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:padding="16dp">
 
         <LinearLayout
+            android:id="@+id/gameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/currentPlayerText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/playingText"
+                android:id="@+id/statusText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/civetLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingVertical="4dp"
-            android:visibility="gone">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/civetInfoText"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/civet_expression" />
+                android:visibility="gone" />
 
-            <EditText
-                android:id="@+id/civetBet"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/civetLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minWidth="48dp"
-                android:gravity="center"
-                android:inputType="number"
-                android:hint="@string/zero"
-                android:autofillHints="" />
+                android:orientation="vertical"
+                android:paddingVertical="4dp"
+                android:visibility="gone">
 
-            <TextView
-                android:layout_width="wrap_content"
+                <TextView
+                    style="@style/Hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/civet_hint" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:labelFor="@+id/civetBet"
+                        android:text="@string/civet_expression" />
+
+                    <EditText
+                        android:id="@+id/civetBet"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="64dp"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:maxLength="3"
+                        android:autofillHints="" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/on" />
+
+                    <Spinner
+                        android:id="@+id/civetFigure"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/excl" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/on" />
+                android:orientation="horizontal"
+                android:gravity="center">
 
-            <Spinner
-                android:id="@+id/civetFigure"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                <com.example.culdechouette.DiceEditText
+                    android:id="@+id/dice1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/dice1" />
 
-            <TextView
-                android:layout_width="wrap_content"
+                <com.example.culdechouette.DiceEditText
+                    android:id="@+id/dice2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/dice2" />
+
+                <com.example.culdechouette.DiceEditText
+                    android:id="@+id/dice3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/dice3" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/validateRollButton"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/excl" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-            <com.example.culdechouette.DiceEditText
-                android:id="@+id/dice1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/dice1" />
-
-            <com.example.culdechouette.DiceEditText
-                android:id="@+id/dice2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/dice2" />
-
-            <com.example.culdechouette.DiceEditText
-                android:id="@+id/dice3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/dice3" />
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/validateRollButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/validate_roll" />
-
-        <Button
-            android:id="@+id/siroterButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/sirotage"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/soufletteButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/souflette"
-            android:visibility="gone" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/figure" />
+                android:text="@string/validate_roll" />
 
             <TextView
                 android:id="@+id/figureText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/none_e" />
+                android:paddingVertical="4dp" />
+
+            <Button
+                android:id="@+id/siroterButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sirotage"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/chouetteVeluteButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/chouette_velute"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/suiteButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/suite"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/souffletteButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/soufflette"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/grelottineButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/grelottine"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/civetButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/civet" />
+
+            <Button
+                android:id="@+id/nextTurnButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/next_turn"
+                android:enabled="false" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:text="@string/player_score" />
+
+            <TextView
+                android:id="@+id/playersScoreText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/winnerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/score" />
-
-            <TextView
-                android:id="@+id/resultText"
+                android:id="@+id/winnerText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/zero" />
+                android:textAlignment="center"
+                android:textSize="@dimen/text_size_very_large" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/win_the_game"
+                android:textAlignment="center"
+                android:textSize="@dimen/text_size_large" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_marginVertical="16dp" />
+
+            <TextView
+                android:id="@+id/rankText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textSize="@dimen/text_size_large" />
+
+            <Button
+                android:id="@+id/summaryButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/summary" />
+
+            <Button
+                android:id="@+id/newGameButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/new_game" />
         </LinearLayout>
-
-        <Button
-            android:id="@+id/nextTurnButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/next_turn"
-            android:enabled="false" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/player_score" />
-
-        <TextView
-            android:id="@+id/playersScoreText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/winnerLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/winnerText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="@dimen/text_size_very_large" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/win_the_game"
-            android:textAlignment="center"
-            android:textSize="@dimen/text_size_large" />
-
-        <com.google.android.material.divider.MaterialDivider
-            android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:layout_marginVertical="16dp" />
-
-        <TextView
-            android:id="@+id/rankText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="@dimen/text_size_large" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/buttonLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:gravity="end">
-
-        <Button
-            android:id="@+id/grelottineButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/grelottine"
-            android:enabled="false" />
-
-        <Button
-            android:id="@+id/civetButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/civet" />
-    </LinearLayout>
-
-</RelativeLayout>
+    </FrameLayout>
+</ScrollView>

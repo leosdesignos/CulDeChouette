@@ -12,6 +12,8 @@
         android:layout_height="wrap_content"
         android:hint="@string/player_name"
         android:inputType="textCapWords"
+        android:imeOptions="actionDone"
+        android:maxLength="30"
         android:autofillHints="" />
 
     <Button
@@ -27,11 +29,25 @@
         android:layout_weight="1" />
 
     <TextView
+        style="@style/Hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:text="@string/players_hint" />
+
+    <TextView
+        style="@style/Hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingVertical="8dp"
-        android:textSize="@dimen/text_size_small"
         android:text="@string/doublette_hint" />
+
+    <Button
+        android:id="@+id/resumeButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/resume_game"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/startGameButton"

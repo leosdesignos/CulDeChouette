@@ -1,49 +1,55 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".SuiteActivity">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="16dp"
-        android:textSize="@dimen/text_size_small"
-        android:text="@string/suite_hint" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="start"
-        android:paddingBottom="8dp">
-
-        <Spinner
-            android:id="@+id/playerSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            style="@style/Hint"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/loose" />
+            android:paddingBottom="16dp"
+            android:text="@string/suite_hint" />
 
-        <Spinner
-            android:id="@+id/pointSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingBottom="8dp">
+
+            <Spinner
+                android:id="@+id/playerSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/loose" />
+
+            <Spinner
+                android:id="@+id/pointSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
             android:text="@string/suite_expression" />
-    </LinearLayout>
 
-    <Button
-        android:id="@+id/backButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/back_to_game" />
-</LinearLayout>
+        <Button
+            android:id="@+id/validateButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/validate" />
+    </LinearLayout>
+</ScrollView>

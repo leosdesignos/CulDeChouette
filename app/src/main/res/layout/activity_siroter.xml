@@ -1,92 +1,99 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".SiroterActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/bet" />
-
-    <ListView
-        android:id="@+id/playersListView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/validateBetButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/validate_bet" />
-
-    <com.example.culdechouette.DiceEditText
-        android:id="@+id/diceEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/dice"
-        android:visibility="gone" />
-
-    <Button
-        android:id="@+id/validateRollButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/validate_roll"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/resultText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingVertical="4dp"
-        android:visibility="gone" />
-
     <LinearLayout
-        android:id="@+id/contreSiropLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingVertical="8dp"
-        android:visibility="gone">
+        android:padding="16dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="8dp"
-            android:textSize="@dimen/text_size_small"
-            android:text="@string/contre_sirop_hint" />
+            android:text="@string/bet" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/noBettorText"
+            style="@style/Hint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:paddingVertical="4dp"
+            android:text="@string/no_bettor"
+            android:visibility="gone" />
 
-            <Spinner
-                android:id="@+id/playerSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+        <LinearLayout
+            android:id="@+id/betsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <Button
+            android:id="@+id/validateBetButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/validate_bet" />
+
+        <com.example.culdechouette.DiceEditText
+            android:id="@+id/diceEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/dice"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/resultText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="4dp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/contreSiropLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingVertical="8dp"
+            android:visibility="gone">
 
             <TextView
+                style="@style/Hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/contre_sirop_expression" />
+                android:paddingBottom="8dp"
+                android:text="@string/contre_sirop_hint" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/playerSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/contre_sirop_expression" />
+            </LinearLayout>
         </LinearLayout>
+
+        <Button
+            android:id="@+id/validateButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/validate_sirotage"
+            android:visibility="gone" />
+
+        <TextView
+            style="@style/Hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="8dp"
+            android:text="@string/siroter_hint" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/hintText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingVertical="8dp"
-        android:textSize="@dimen/text_size_small"
-        android:text="@string/siroter_hint" />
-
-    <Button
-        android:id="@+id/backButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/back_to_game"
-        android:enabled="false" />
-</LinearLayout>
+</ScrollView>

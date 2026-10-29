@@ -1,75 +1,76 @@
 package com.example.culdechouette;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
+import com.example.culdechouette.game.Game;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/** Designates the last player who shouted "Grelotte ça picote !". */
 public class SuiteActivity extends AppCompatActivity {
 
-    public static final int SUBACT_ID = 2;
+    /** After ties, the loser loses 20 points, then 30... */
+    private static final int MAX_MULTIPLIER = 9;
 
-    private Spinner playerSpinner;
+    private GameStore store;
+    private Ui.PlayerSpinner playerSpinner;
     private Spinner pointSpinner;
-    private Button backButton;
-
-    private GameData game;
+    private Button validateButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_suite);
+        store = GameStore.get(this);
+        Game game = GameStore.gameOrRestart(this);
+        if (game == null) {
+            return;
+        }
+        if (!game.turn().isSuitePending()) {
+            finish();
+            return;
+        }
 
-        playerSpinner = findViewById(R.id.playerSpinner);
+        Spinner spinner = findViewById(R.id.playerSpinner);
         pointSpinner = findViewById(R.id.pointSpinner);
-        backButton = findViewById(R.id.backButton);
+        validateButton = findViewById(R.id.validateButton);
 
-        game = GameData.getInstance();
-
-        backButton.setEnabled(false);
-        backButton.setOnClickListener(v -> backToMainActivity());
-
-        ArrayList<Player> playerItems = new ArrayList<>(game.playerList());
-        playerItems.add(0, new Player(getString(R.string.no_one)));
-
-        ArrayAdapter<Player> spinnerAdapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item, playerItems);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
-        playerSpinner.setAdapter(spinnerAdapter);
-        playerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        playerSpinner = new Ui.PlayerSpinner(spinner, game, game.otherPlayers(), true);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                backButton.setEnabled(position != 0);
+                validateButton.setEnabled(playerSpinner.selected() != Game.NOBODY);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) { }
         });
+        validateButton.setEnabled(false);
 
-        ArrayAdapter<CharSequence> spinnerAdapter2 = ArrayAdapter.createFromResource(
-                this, R.array.suite_loose_options, android.R.layout.simple_spinner_item);
-        spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
-        pointSpinner.setAdapter(spinnerAdapter2);
+        // Position + 1 is the multiplier of the 10 points lost
+        List<String> points = new ArrayList<>();
+        for (int multiplier = 1; multiplier <= MAX_MULTIPLIER; multiplier++) {
+            points.add(getString(R.string.points_value, Game.SUITE_PENALTY * multiplier));
+        }
+        pointSpinner.setAdapter(Ui.adapter(this, points));
 
-        playerSpinner.post(() -> playerSpinner.performClick());
+        validateButton.setOnClickListener(v -> validate());
+        if (savedInstanceState == null) {
+            spinner.post(spinner::performClick);
+        }
     }
 
-    private void backToMainActivity() {
-        Player player = (Player) playerSpinner.getSelectedItem();
-        if (!player.name().equals(getString(R.string.no_one))) {
-            game.addRoundScore(player, -10 * (1 + pointSpinner.getSelectedItemPosition()));
-        }
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("id", SUBACT_ID);
-        setResult(RESULT_OK, resultIntent);
+    private void validate() {
+        int player = playerSpinner.selected();
+        int multiplier = pointSpinner.getSelectedItemPosition() + 1;
+        store.run(game -> game.loseSuite(player, multiplier));
         finish();
     }
-
 }

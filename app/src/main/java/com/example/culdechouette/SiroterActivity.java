@@ -1,233 +1,173 @@
 package com.example.culdechouette;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import com.example.culdechouette.game.Game;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+/** The roller throws one die to turn their Chouette into a Cul de Chouette, the others bet on it. */
 public class SiroterActivity extends AppCompatActivity {
 
-    public static final int SUBACT_ID = 0;
+    private static final String STATE_BETS = "bets";
+    private static final String STATE_LOCKED = "betsLocked";
 
-    private ListView playersListView;
+    private final List<Integer> bettors = new ArrayList<>();
+    private final List<Spinner> betSpinners = new ArrayList<>();
+
     private DiceEditText diceEditText;
     private Button validateBetButton;
-    private Button validateRollButton;
-    private Button backButton;
+    private Button validateButton;
     private TextView resultText;
-    private TextView hintText;
     private LinearLayout contreSiropLayout;
-    private Spinner playerSpinner;
+    private Ui.PlayerSpinner contreSiropSpinner;
 
-    private boolean civet;
-    private boolean success;
+    private GameStore store;
+    private int roller;
     private int chouetteValue;
-    private HashMap<Player, Integer> siroterScore;
-    private PlayersAdapter playersAdapter;
-    private GameData game;
+    private boolean betsLocked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_siroter);
+        store = GameStore.get(this);
+        Game game = GameStore.gameOrRestart(this);
+        if (game == null) {
+            return;
+        }
+        if (!game.canSirote()) {
+            finish();
+            return;
+        }
+        roller = game.roller();
+        chouetteValue = game.turn().roll().value();
 
-        playersListView = findViewById(R.id.playersListView);
+        LinearLayout betsLayout = findViewById(R.id.betsLayout);
         diceEditText = findViewById(R.id.diceEditText);
         validateBetButton = findViewById(R.id.validateBetButton);
-        validateRollButton = findViewById(R.id.validateRollButton);
+        validateButton = findViewById(R.id.validateButton);
         resultText = findViewById(R.id.resultText);
-        hintText = findViewById(R.id.hintText);
         contreSiropLayout = findViewById(R.id.contreSiropLayout);
-        playerSpinner = findViewById(R.id.playerSpinner);
-        backButton = findViewById(R.id.backButton);
 
-        // Récupérer les données passées à l'activité
-        chouetteValue = getIntent().getIntExtra("chouetteValue", -1);
+        ArrayAdapter<String> diceAdapter = Ui.adapter(this,
+                Arrays.asList(getResources().getStringArray(R.array.dice_options)));
+        for (int player : game.otherPlayers(roller)) {
+            if (!game.canBet(player)) {
+                continue;
+            }
+            View row = getLayoutInflater().inflate(R.layout.player_item, betsLayout, false);
+            ((TextView) row.findViewById(R.id.playerNameTextView)).setText(game.player(player).name());
+            Spinner spinner = row.findViewById(R.id.choiceSpinner);
+            spinner.setAdapter(diceAdapter);
+            betsLayout.addView(row);
+            bettors.add(player);
+            betSpinners.add(spinner);
+        }
+        findViewById(R.id.noBettorText).setVisibility(bettors.isEmpty() ? View.VISIBLE : View.GONE);
+        contreSiropSpinner = new Ui.PlayerSpinner(findViewById(R.id.playerSpinner), game, game.otherPlayers(roller), true);
 
-        game = GameData.getInstance();
-        siroterScore = new HashMap<>();
-
-        ArrayList<Player> otherPlayerList = new ArrayList<>(game.playerList());
-        otherPlayerList.remove(game.currentPlayer());
-        playersAdapter = new PlayersAdapter(otherPlayerList);
-        playersListView.setAdapter(playersAdapter);
-
-        validateBetButton.setOnClickListener(v -> validateBets());
-        validateRollButton.setOnClickListener(v -> validateRoll());
-        backButton.setOnClickListener(v -> backToMainActivity());
-
-        ArrayList<Player> playerItems = new ArrayList<>(otherPlayerList);
-        playerItems.add(0, new Player(getString(R.string.no_one)));
-
-        ArrayAdapter<Player> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, playerItems);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
-        playerSpinner.setAdapter(spinnerAdapter);
-    }
-
-    private void validateBets() {
-        // Avoid going out of screen with lot of player
-        if (playersAdapter.getCount() > 3) {
-            View item = playersAdapter.getView(0, null, playersListView);
-            item.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-            int itemHeight = item.getMeasuredHeight();
-
-            ViewGroup.LayoutParams params = playersListView.getLayoutParams();
-            params.height = (int) (3.5 * itemHeight);
-            playersListView.setLayoutParams(params);
+        if (savedInstanceState != null) {
+            betsLocked = savedInstanceState.getBoolean(STATE_LOCKED);
+            int[] bets = savedInstanceState.getIntArray(STATE_BETS);
+            for (int i = 0; bets != null && i < bets.length && i < betSpinners.size(); i++) {
+                betSpinners.get(i).setSelection(bets[i]);
+            }
         }
 
-        playersAdapter.disableSpinners();
-        validateBetButton.setEnabled(false);
-        diceEditText.setVisibility(View.VISIBLE);
-        validateRollButton.setVisibility(View.VISIBLE);
+        validateBetButton.setOnClickListener(v -> lockBets());
+        validateButton.setOnClickListener(v -> validate());
+        diceEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                updateResult();
+            }
+        });
+        applyLock();
+        updateResult();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(STATE_LOCKED, betsLocked);
+        int[] bets = new int[betSpinners.size()];
+        for (int i = 0; i < bets.length; i++) {
+            bets[i] = betSpinners.get(i).getSelectedItemPosition();
+        }
+        outState.putIntArray(STATE_BETS, bets);
+    }
+
+    private void lockBets() {
+        betsLocked = true;
+        applyLock();
         diceEditText.focus();
     }
 
-    private void validateRoll() {
-        if (diceEditText.isEmpty()) {
-            Toast.makeText(this, R.string.wrong_dice_input, Toast.LENGTH_SHORT).show();
+    /** Bets are placed before the die is thrown. */
+    private void applyLock() {
+        for (Spinner spinner : betSpinners) {
+            spinner.setEnabled(!betsLocked);
+        }
+        validateBetButton.setEnabled(!betsLocked);
+        diceEditText.setVisibility(betsLocked ? View.VISIBLE : View.GONE);
+        validateButton.setVisibility(betsLocked ? View.VISIBLE : View.GONE);
+    }
+
+    private void updateResult() {
+        int die = diceEditText.value();
+        if (die == 0) {
+            resultText.setVisibility(View.GONE);
+            contreSiropLayout.setVisibility(View.GONE);
             return;
         }
-        int diceValue = diceEditText.value();
-
-        civet = false;
-        success = false;
-
-        Player currentPlayer = game.currentPlayer();
-        for (Player player : game.playerList()) {
-            int score = 0;
-            if (player.equals(currentPlayer)) {
-                int chouetteScore = new Roll(Roll.Figure.CHOUETTE, chouetteValue).figureScore();
-                score -= chouetteScore; // Revert score added in MainActivity
-                if (diceValue == chouetteValue) {
-                    success = true;
-                    score += new Roll(Roll.Figure.CUL_DE_CHOUETTE_SIROTE, chouetteValue).figureScore();
-                } else {
-                    score -= chouetteScore;
-                    if (chouetteValue == 6) {
-                        civet = true;
-                    }
-                }
-            } else {
-                int bet = playersAdapter.getPlayerChoice(player);
-                if (bet != 0) {
-                    score -= 5;
-                    if (bet == diceValue) {
-                        score += 30;
-                    }
-                }
-            }
-            siroterScore.put(player, score);
-        }
-
-        hintText.setVisibility(View.GONE);
-        validateRollButton.setEnabled(false);
-        backButton.setEnabled(true);
-
+        String name = store.game().player(roller).name();
+        boolean success = die == chouetteValue;
         resultText.setVisibility(View.VISIBLE);
-        resultText.setText(String.format("%s%s%s",
-                currentPlayer.name(),
-                success ? getString(R.string.sirotage_success) : getString(R.string.sirotage_fail),
-                success ? new Roll(Roll.Figure.CHOUETTE, chouetteValue).figureName() : ""));
-
-        if (!success) {
-            contreSiropLayout.setVisibility(View.VISIBLE);
-            playerSpinner.performClick();
-        }
+        resultText.setText(success
+                ? getString(R.string.sirotage_success, name, chouetteValue)
+                : getString(R.string.sirotage_fail, name));
+        contreSiropLayout.setVisibility(success ? View.GONE : View.VISIBLE);
     }
 
-    private void backToMainActivity() {
-        if (!success) {
-            Player player = (Player) playerSpinner.getSelectedItem();
-            if (!player.name().equals(getString(R.string.no_one))) {
-                game.addRoundScore(player, new Roll(Roll.Figure.CUL_DE_CHOUETTE_SIROTE, chouetteValue).figureScore() / 5);
-            }
+    private void validate() {
+        int die = diceEditText.value();
+        if (die == 0) {
+            Ui.toast(this, R.string.wrong_dice_input);
+            return;
         }
-        for (Player player : siroterScore.keySet()) {
-            //noinspection ConstantConditions
-            game.addRoundScore(player, siroterScore.get(player));
+        Game game = store.game();
+        // The position in the spinner is the value of the die bet on, 0 for no bet
+        int[] bets = new int[game.players().size()];
+        for (int i = 0; i < bettors.size(); i++) {
+            bets[bettors.get(i)] = betSpinners.get(i).getSelectedItemPosition();
         }
-        if (civet) {
-            if (game.currentPlayer().setCivet(true)) {
-                Toast.makeText(this, R.string.civet_acq, Toast.LENGTH_SHORT).show();
-            }
+        int contreSirop = die == chouetteValue ? Game.NOBODY : contreSiropSpinner.selected();
+        boolean hadCivet = game.player(roller).hasCivet();
+
+        store.run(g -> g.sirote(die, bets, contreSirop));
+
+        if (!hadCivet && store.game().player(roller).hasCivet()) {
+            Ui.toast(this, R.string.civet_acq, store.game().player(roller).name());
         }
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("id", SUBACT_ID);
-        resultIntent.putExtra("success", success);
-        setResult(RESULT_OK, resultIntent);
         finish();
-    }
-
-    private class PlayersAdapter extends ArrayAdapter<Player> {
-
-        private final Map<Player, Integer> playerSelection;
-        private final ArrayAdapter<CharSequence> spinnerAdapter;
-
-        private boolean spinnerEnable;
-
-        public PlayersAdapter(ArrayList<Player> playersList) {
-            super(SiroterActivity.this, R.layout.player_item, playersList);
-            this.spinnerEnable = true;
-            this.playerSelection = new HashMap<>();
-            this.spinnerAdapter = ArrayAdapter.createFromResource(getContext(),
-                    R.array.dice_options, android.R.layout.simple_spinner_item);
-            this.spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = getLayoutInflater().inflate(R.layout.player_item, parent, false);
-            }
-
-            TextView playerNameTextView = convertView.findViewById(R.id.playerNameTextView);
-            Spinner diceSpinner = convertView.findViewById(R.id.choiceSpinner);
-
-            Player player = getItem(position);
-            playerNameTextView.setText(player.name());
-
-            diceSpinner.setAdapter(spinnerAdapter);
-            diceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    playerSelection.put(player, position);
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) { }
-            });
-            if (playerSelection.containsKey(player)) {
-                //noinspection ConstantConditions
-                diceSpinner.setSelection(playerSelection.get(player));
-            }
-            diceSpinner.setEnabled(spinnerEnable);
-
-            return convertView;
-        }
-
-        public int getPlayerChoice(Player player) {
-            Integer choice = playerSelection.get(player);
-            return (choice != null) ? choice : 0;
-        }
-
-        public void disableSpinners() {
-            this.spinnerEnable = false;
-            notifyDataSetChanged();
-        }
     }
 }

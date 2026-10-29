@@ -22,7 +22,8 @@
             android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".SiroterActivity"
-            android:label="@string/sirotage" />
+            android:label="@string/sirotage"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ChouetteVeluteActivity"
             android:label="@string/chouette_velute" />
@@ -30,11 +31,12 @@
             android:name=".SuiteActivity"
             android:label="@string/suite" />
         <activity
-            android:name=".SoufletteActivity"
-            android:label="@string/souflette" />
+            android:name=".SouffletteActivity"
+            android:label="@string/soufflette" />
         <activity
             android:name=".GrelottineActivity"
-            android:label="@string/grelottine" />
+            android:label="@string/grelottine"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".SummaryActivity"
             android:label="@string/summary"/>

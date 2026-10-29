@@ -1,57 +1,43 @@
 package com.example.culdechouette;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
+import com.example.culdechouette.game.Game;
 
+/** Designates the first player who shouted "Pas mou le caillou !", who wins the Chouette Velute. */
 public class ChouetteVeluteActivity extends AppCompatActivity {
 
-    public static final int SUBACT_ID = 1;
-
-    private Spinner playerSpinner;
-
-    private int veluteValue;
-    private GameData game;
+    private GameStore store;
+    private Ui.PlayerSpinner playerSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chouette_velute);
+        store = GameStore.get(this);
+        Game game = GameStore.gameOrRestart(this);
+        if (game == null) {
+            return;
+        }
+        if (!game.turn().isChouetteVelutePending()) {
+            finish();
+            return;
+        }
 
-        playerSpinner = findViewById(R.id.playerSpinner);
-        Button backButton = findViewById(R.id.backButton);
-
-        // Récupérer les données passées à l'activité
-        veluteValue = getIntent().getIntExtra("veluteValue", -1);
-
-        game = GameData.getInstance();
-
-        backButton.setOnClickListener(v -> backToMainActivity());
-
-        ArrayList<Player> playerItems = new ArrayList<>(game.playerList());
-        playerItems.add(0, new Player(getString(R.string.no_one)));
-
-        ArrayAdapter<Player> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, playerItems);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
-        playerSpinner.setAdapter(spinnerAdapter);
-        playerSpinner.post(() -> playerSpinner.performClick());
+        Spinner spinner = findViewById(R.id.playerSpinner);
+        playerSpinner = new Ui.PlayerSpinner(spinner, game, game.otherPlayers(), true);
+        findViewById(R.id.validateButton).setOnClickListener(v -> validate());
+        if (savedInstanceState == null) {
+            spinner.post(spinner::performClick);
+        }
     }
 
-    private void backToMainActivity() {
-        Player player = (Player) playerSpinner.getSelectedItem();
-        if (!player.name().equals(getString(R.string.no_one))) {
-            game.addRoundScore(player, new Roll(Roll.Figure.CHOUETTE_VELUTE, veluteValue).figureScore());
-        }
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("id", SUBACT_ID);
-        setResult(RESULT_OK, resultIntent);
+    private void validate() {
+        int player = playerSpinner.selected();
+        store.run(game -> game.claimChouetteVelute(player));
         finish();
     }
-
 }

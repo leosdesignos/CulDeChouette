@@ -1,98 +1,129 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".GrelottineActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="8dp">
-
-        <Spinner
-            android:id="@+id/playerSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/challenge" />
+            android:id="@+id/challengerLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <Spinner
-            android:id="@+id/player2Spinner"
+            android:id="@+id/challengerSpinner"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp" />
+
+        <TextView
+            android:id="@+id/challengeText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp" />
+
+        <LinearLayout
+            android:id="@+id/newTargetLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:id="@+id/passeGrelotToText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Spinner
+                android:id="@+id/newTargetSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/validateButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/validate_challenge" />
+
+        <Button
+            android:id="@+id/passeGrelotButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/passe_grelot" />
+
+        <LinearLayout
+            android:id="@+id/grelottineLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="4dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/grelottineBet"
+                android:text="@string/grelottine_expression" />
+
+            <EditText
+                android:id="@+id/grelottineBet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="64dp"
+                android:gravity="center"
+                android:inputType="number"
+                android:maxLength="3"
+                android:imeOptions="actionDone"
+                android:autofillHints="" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/on" />
+
+            <Spinner
+                android:id="@+id/grelottineFigure"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/excl" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/betsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:text="@string/grelottine_bets" />
+
+        <LinearLayout
+            android:id="@+id/betsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <Button
+            android:id="@+id/startButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/start_challenge" />
+
+        <TextView
+            style="@style/Hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="8dp"
+            android:text="@string/grelottine_hint" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/validateButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/validate_challenge"
-        android:enabled="true" />
-
-    <LinearLayout
-        android:id="@+id/grelottineLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingVertical="4dp"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/grelottine_expression" />
-
-        <EditText
-            android:id="@+id/grelottineBet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="48dp"
-            android:gravity="center"
-            android:inputType="number"
-            android:imeOptions="actionDone"
-            android:hint="@string/zero"
-            android:autofillHints="" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/on" />
-
-        <Spinner
-            android:id="@+id/grelottineFigure"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/excl" />
-    </LinearLayout>
-
-    <ListView
-        android:id="@+id/playersListView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:textSize="@dimen/text_size_small"
-        android:text="@string/grelottine_hint" />
-
-    <Button
-        android:id="@+id/startButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/start_challenge"
-        android:enabled="false" />
-</LinearLayout>
+</ScrollView>

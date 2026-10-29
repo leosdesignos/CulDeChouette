@@ -1,269 +1,287 @@
 package com.example.culdechouette;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.example.culdechouette.game.Figure;
+import com.example.culdechouette.game.Game;
+import com.google.android.material.checkbox.MaterialCheckBox;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * A player challenges the owner of the turn after their Néant: choice of the challenger,
+ * possible Passe-Grelot to another target, then figure, stake and bets.
+ */
 public class GrelottineActivity extends AppCompatActivity {
 
-    public static final int SUBACT_ID = 4;
+    private static final String STATE_STEP = "step";
+    private static final String STATE_CHALLENGER = "challenger";
+    private static final String STATE_TARGET = "target";
+    private static final String STATE_PASSE_REFUSED = "passeRefused";
+    private static final String STATE_BETTORS = "bettors";
 
-    private Button validateButton;
-    private Button startButton;
-    private Spinner playerSpinner;
-    private Spinner player2Spinner;
+    private static final int STEP_CHALLENGER = 0;
+    private static final int STEP_NEW_TARGET = 1;
+    private static final int STEP_CHALLENGE = 2;
+
+    private final Figure[] figures = Figure.bettable();
+    private final List<MaterialCheckBox> betBoxes = new ArrayList<>();
+    private final List<Integer> bettors = new ArrayList<>();
+
+    private TextView challengerLabel;
+    private TextView challengeText;
+    private TextView passeGrelotToText;
+    private TextView betsTitle;
+    private Spinner challengerSpinnerView;
+    private Spinner newTargetSpinnerView;
     private Spinner grelottineFigure;
-    private EditText grelottineBet;
-    private ListView playersListView;
+    private LinearLayout newTargetLayout;
     private LinearLayout grelottineLayout;
+    private LinearLayout betsLayout;
+    private Button validateButton;
+    private Button passeGrelotButton;
+    private Button startButton;
+    private EditText grelottineBet;
+    private Ui.PlayerSpinner challengerSpinner;
+    private Ui.PlayerSpinner newTargetSpinner;
 
-    private int maxBet = 0;
-    private boolean passegrelot = false;
-    private Player targetedPlayer;
-    private Player targetingPlayer;
-    private GameData game;
-    private PlayersAdapter playersAdapter;
+    private GameStore store;
+    private int owner;
+    private int step = STEP_CHALLENGER;
+    private int challenger = Game.NOBODY;
+    private int target;
+    private boolean passeRefused;
+    private boolean[] checkedBettors;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grelottine);
+        store = GameStore.get(this);
+        Game game = GameStore.gameOrRestart(this);
+        if (game == null) {
+            return;
+        }
+        if (!game.canGrelottine()) {
+            finish();
+            return;
+        }
+        owner = game.turn().owner();
+        target = owner;
+        checkedBettors = new boolean[game.players().size()];
 
-        playersListView = findViewById(R.id.playersListView);
-        validateButton = findViewById(R.id.validateButton);
-        startButton = findViewById(R.id.startButton);
-        playerSpinner = findViewById(R.id.playerSpinner);
-        player2Spinner = findViewById(R.id.player2Spinner);
+        challengerLabel = findViewById(R.id.challengerLabel);
+        challengeText = findViewById(R.id.challengeText);
+        passeGrelotToText = findViewById(R.id.passeGrelotToText);
+        betsTitle = findViewById(R.id.betsTitle);
+        challengerSpinnerView = findViewById(R.id.challengerSpinner);
+        newTargetSpinnerView = findViewById(R.id.newTargetSpinner);
         grelottineFigure = findViewById(R.id.grelottineFigure);
-        grelottineBet = findViewById(R.id.grelottineBet);
+        newTargetLayout = findViewById(R.id.newTargetLayout);
         grelottineLayout = findViewById(R.id.grelottineLayout);
+        betsLayout = findViewById(R.id.betsLayout);
+        validateButton = findViewById(R.id.validateButton);
+        passeGrelotButton = findViewById(R.id.passeGrelotButton);
+        startButton = findViewById(R.id.startButton);
+        grelottineBet = findViewById(R.id.grelottineBet);
 
-        game = GameData.getInstance();
-
-        validateButton.setOnClickListener(v -> validateTarget());
-        startButton.setOnClickListener(v -> backToMainActivity());
-
-        ArrayList<Player> playerItems = new ArrayList<>(game.playerList());
-        playerItems.remove(game.currentPlayer());
-        ArrayAdapter<Player> spinnerAdapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item, playerItems);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
-        playerSpinner.setAdapter(spinnerAdapter);
-
-        ArrayAdapter<Player> spinner2Adapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item, game.playerList());
-        spinner2Adapter.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
-        player2Spinner.setAdapter(spinner2Adapter);
-        player2Spinner.setSelection(game.playerList().indexOf(game.currentPlayer()));
-        player2Spinner.setEnabled(false);
-
-        List<Roll.Figure> figs = Arrays.asList(Roll.Figure.CHOUETTE, Roll.Figure.VELUTE,
-                Roll.Figure.CHOUETTE_VELUTE, Roll.Figure.SUITE,
-                Roll.Figure.CUL_DE_CHOUETTE, Roll.Figure.CUL_DE_CHOUETTE_SIROTE);
-        ArrayAdapter<Roll.Figure> spinner3Adapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item, figs);
-        spinner3Adapter.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
-        grelottineFigure.setAdapter(spinner3Adapter);
-
+        challengerSpinner = new Ui.PlayerSpinner(challengerSpinnerView, game, game.otherPlayers(owner), false);
+        grelottineFigure.setAdapter(Ui.adapter(this, Texts.figures(this, figures)));
         grelottineFigure.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                int minScore = Math.min(targetingPlayer.score(), targetedPlayer.score());
-                switch (position) {
-                    case 0:
-                        maxBet = (int) (0.33 * minScore);
-                        break;
-                    case 1:
-                        maxBet = (int) (0.25 * minScore);
-                        break;
-                    case 2:
-                        maxBet = (int) (0.08 * minScore);
-                        break;
-                    case 3:
-                        maxBet = (int) (0.14 * minScore);
-                        break;
-                    case 4:
-                        maxBet = (int) (0.16 * minScore);
-                        break;
-                    case 5:
-                        maxBet = (int) (0.20 * minScore);
-                        break;
-                }
-                grelottineBet.setHint("≤" + Math.max(0, maxBet));
-                grelottineBet.setText("");
+                updateMaxStake();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) { }
         });
+        Ui.clamp(grelottineBet, this::maxStake);
 
-        grelottineBet.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String input = s.toString();
-                if (!input.isEmpty()) {
-                    if (Integer.parseInt(input) > maxBet) {
-                        s.replace(0, s.length(), String.valueOf(maxBet));
-                    }
-                }
+        if (savedInstanceState != null) {
+            step = savedInstanceState.getInt(STATE_STEP);
+            challenger = savedInstanceState.getInt(STATE_CHALLENGER);
+            target = savedInstanceState.getInt(STATE_TARGET);
+            passeRefused = savedInstanceState.getBoolean(STATE_PASSE_REFUSED);
+            boolean[] checked = savedInstanceState.getBooleanArray(STATE_BETTORS);
+            if (checked != null) {
+                checkedBettors = checked;
             }
-        });
+        } else if (game.turn().grelottineChallenger() != Game.NOBODY) {
+            // Back to a challenge announced before this screen was left
+            challenger = game.turn().grelottineChallenger();
+            step = game.turn().passeGrelotBy() != Game.NOBODY ? STEP_NEW_TARGET : STEP_CHALLENGE;
+        }
 
-        playerSpinner.post(() -> playerSpinner.performClick());
+        validateButton.setOnClickListener(v -> validate());
+        passeGrelotButton.setOnClickListener(v -> passeGrelot());
+        startButton.setOnClickListener(v -> start());
+        render();
+        if (step == STEP_CHALLENGER && savedInstanceState == null) {
+            challengerSpinnerView.post(challengerSpinnerView::performClick);
+        }
     }
 
-    private void validateTarget() {
-        if (playerSpinner.getSelectedItem().equals(player2Spinner.getSelectedItem())
-        || (passegrelot && targetedPlayer == player2Spinner.getSelectedItem())) {
-            Toast.makeText(this, R.string.wrong_select_input, Toast.LENGTH_SHORT).show();
-            return;
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(STATE_STEP, step);
+        outState.putInt(STATE_CHALLENGER, challenger);
+        outState.putInt(STATE_TARGET, target);
+        outState.putBoolean(STATE_PASSE_REFUSED, passeRefused);
+        outState.putBooleanArray(STATE_BETTORS, checkedBettors);
+    }
+
+    private Game game() {
+        return store.game();
+    }
+
+    private String name(int player) {
+        return game().player(player).name();
+    }
+
+    private void validate() {
+        if (step == STEP_CHALLENGER) {
+            int selected = challengerSpinner.selected();
+            Game.Outcome outcome = store.perform(game -> game.announceGrelottine(selected));
+            if (outcome == Game.Outcome.BEVUE) {
+                Ui.toast(this, R.string.bevue_grelottine, name(selected));
+                finish();
+                return;
+            }
+            challenger = selected;
+            step = STEP_CHALLENGE;
+        } else if (step == STEP_NEW_TARGET) {
+            target = newTargetSpinner.selected();
+            step = STEP_CHALLENGE;
         }
-        targetingPlayer = (Player) playerSpinner.getSelectedItem();
-        targetedPlayer = (Player) player2Spinner.getSelectedItem();
-
-        if (!targetingPlayer.grelottine()) {
-            game.bevue(targetingPlayer);
-            Toast.makeText(this, R.string.bevue_grelottine, Toast.LENGTH_SHORT).show();
-            setResult(RESULT_CANCELED);
-            finish();
-            return;
-        }
-        validateButton.setText(passegrelot ? R.string.validate_challenge : R.string.passe_grelot);
-        validateButton.setEnabled(!passegrelot);
-        playerSpinner.setEnabled(false);
-        player2Spinner.setEnabled(false);
-
-        ArrayList<Player> otherPlayerList = new ArrayList<>(game.playerList());
-        otherPlayerList.remove(targetedPlayer);
-        otherPlayerList.remove(targetingPlayer);
-        playersAdapter = new PlayersAdapter(otherPlayerList);
-        playersListView.setAdapter(playersAdapter);
-        playersListView.setVisibility(View.VISIBLE);
-
-        grelottineLayout.setVisibility(View.VISIBLE);
-        startButton.setEnabled(true);
-
-        validateButton.setOnClickListener(v -> passeGrelot());
+        render();
     }
 
     private void passeGrelot() {
-        if (!targetedPlayer.setPasseGrelot(false)) {
-            game.bevue(targetedPlayer);
-            Toast.makeText(this, R.string.bevue_passe_grelot, Toast.LENGTH_SHORT).show();
-            validateButton.setEnabled(false);
-            return;
-        }
-        if (game.playerList().size() == 2) {
-            targetedPlayer.setGrelottine(false);
-            targetingPlayer.setGrelottine(false);
-            Toast.makeText(this, R.string.passe_grelot_cancel, Toast.LENGTH_SHORT).show();
-            setResult(RESULT_CANCELED);
+        Game.Outcome outcome = store.perform(Game::passeGrelot);
+        if (outcome == Game.Outcome.BEVUE) {
+            Ui.toast(this, R.string.bevue_passe_grelot, name(owner));
+            passeRefused = true;
+        } else if (outcome == Game.Outcome.CANCELLED) {
+            Ui.toast(this, R.string.passe_grelot_cancel);
             finish();
             return;
+        } else {
+            step = STEP_NEW_TARGET;
         }
-        passegrelot = true;
-
-        grelottineLayout.setVisibility(View.GONE);
-        playersListView.setVisibility(View.INVISIBLE);
-        startButton.setEnabled(false);
-        validateButton.setText(R.string.validate_challenge);
-        validateButton.setOnClickListener(v -> validateTarget());
-        player2Spinner.setEnabled(true);
-        player2Spinner.performClick();
+        render();
     }
 
-    private void backToMainActivity() {
-        String grelottineBetStr = grelottineBet.getText().toString();
-        if (grelottineBetStr.isEmpty()) {
-            Toast.makeText(this, R.string.wrong_bet_input, Toast.LENGTH_SHORT).show();
+    private void start() {
+        if (grelottineBet.getText().length() == 0) {
+            Ui.toast(this, R.string.wrong_bet_input);
             return;
         }
-        targetedPlayer.setGrelottine(false);
-        targetingPlayer.setGrelottine(false);
-        game.grelottine().start(
-                targetedPlayer,
-                targetingPlayer,
-                playersAdapter.getPlayersBet(),
-                (Roll.Figure) grelottineFigure.getSelectedItem(),
-                Integer.parseInt(grelottineBetStr));
-
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("id", SUBACT_ID);
-        setResult(RESULT_OK, resultIntent);
+        int stake = Ui.intValue(grelottineBet);
+        Figure figure = selectedFigure();
+        List<Integer> chosen = new ArrayList<>();
+        for (int i = 0; i < bettors.size(); i++) {
+            if (betBoxes.get(i).isChecked()) {
+                chosen.add(bettors.get(i));
+            }
+        }
+        int[] bettorIndexes = new int[chosen.size()];
+        for (int i = 0; i < bettorIndexes.length; i++) {
+            bettorIndexes[i] = chosen.get(i);
+        }
+        try {
+            store.run(game -> game.startGrelottine(target, figure, stake, bettorIndexes));
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            Ui.toast(this, R.string.wrong_bet_input);
+            return;
+        }
         finish();
     }
 
-    private class PlayersAdapter extends ArrayAdapter<Player> {
+    private void render() {
+        Game game = game();
+        boolean chooseChallenger = step == STEP_CHALLENGER;
+        boolean challenge = step == STEP_CHALLENGE;
 
-        private final Map<Player, Boolean> playerSelection;
-        private final ArrayAdapter<CharSequence> spinnerAdapter;
-
-        public PlayersAdapter(ArrayList<Player> playersList) {
-            super(GrelottineActivity.this, R.layout.player_item, playersList);
-            this.playerSelection = new HashMap<>();
-            this.spinnerAdapter = ArrayAdapter.createFromResource(getContext(),
-                    R.array.grelottine_options, android.R.layout.simple_spinner_item);
-            this.spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
+        challengerLabel.setVisibility(chooseChallenger ? View.VISIBLE : View.GONE);
+        challengerLabel.setText(getString(R.string.grelottine_challenger, name(owner)));
+        challengerSpinnerView.setVisibility(chooseChallenger ? View.VISIBLE : View.GONE);
+        challengeText.setVisibility(chooseChallenger ? View.GONE : View.VISIBLE);
+        if (!chooseChallenger) {
+            challengeText.setText(getString(R.string.challenge_text, name(challenger), name(target)));
         }
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = getLayoutInflater().inflate(R.layout.player_item, parent, false);
+        newTargetLayout.setVisibility(step == STEP_NEW_TARGET ? View.VISIBLE : View.GONE);
+        if (step == STEP_NEW_TARGET && newTargetSpinner == null) {
+            passeGrelotToText.setText(getString(R.string.passe_grelot_to, name(owner)));
+            newTargetSpinner = new Ui.PlayerSpinner(newTargetSpinnerView, game,
+                    game.otherPlayers(owner, challenger), false);
+        }
+        validateButton.setVisibility(challenge ? View.GONE : View.VISIBLE);
+        validateButton.setText(chooseChallenger ? R.string.validate_challenge : R.string.validate);
+
+        passeGrelotButton.setVisibility(challenge && target == owner && !passeRefused
+                && game.turn().passeGrelotBy() == Game.NOBODY ? View.VISIBLE : View.GONE);
+        grelottineLayout.setVisibility(challenge ? View.VISIBLE : View.GONE);
+        startButton.setVisibility(challenge ? View.VISIBLE : View.GONE);
+        if (challenge) {
+            buildBets(game);
+            updateMaxStake();
+        } else {
+            betsTitle.setVisibility(View.GONE);
+            betsLayout.setVisibility(View.GONE);
+        }
+    }
+
+    /** Players not involved in the challenge can bet on its success. */
+    private void buildBets(Game game) {
+        betsLayout.removeAllViews();
+        betBoxes.clear();
+        bettors.clear();
+        for (int player : game.otherPlayers(challenger, target)) {
+            if (!game.canBet(player)) {
+                continue;
             }
-
-            TextView playerNameTextView = convertView.findViewById(R.id.playerNameTextView);
-            Spinner betSpinner = convertView.findViewById(R.id.choiceSpinner);
-
-            Player player = getItem(position);
-            playerNameTextView.setText(player.name());
-
-            betSpinner.setAdapter(spinnerAdapter);
-            betSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if (position == 0) {
-                        playerSelection.remove(player);
-                    } else {
-                        playerSelection.put(player, position == 1);
-                    }
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) { }
-            });
-
-            return convertView;
+            MaterialCheckBox box = new MaterialCheckBox(this);
+            box.setText(game.player(player).name());
+            box.setChecked(checkedBettors[player]);
+            box.setOnCheckedChangeListener((button, checked) -> checkedBettors[player] = checked);
+            betsLayout.addView(box);
+            betBoxes.add(box);
+            bettors.add(player);
         }
+        betsTitle.setVisibility(bettors.isEmpty() ? View.GONE : View.VISIBLE);
+        betsLayout.setVisibility(bettors.isEmpty() ? View.GONE : View.VISIBLE);
+    }
 
-        public Map<Player, Boolean> getPlayersBet() {
-            return playerSelection;
+    /** The maximum depends on both players and on the figure, so it changes with the target. */
+    private void updateMaxStake() {
+        if (step != STEP_CHALLENGE) {
+            return;
         }
+        int max = maxStake();
+        grelottineBet.setHint(getString(R.string.stake_max, max));
+        if (Ui.intValue(grelottineBet) > max) {
+            grelottineBet.setText(String.valueOf(max));
+        }
+    }
+
+    private int maxStake() {
+        return challenger == Game.NOBODY ? 0 : game().maxGrelottineStake(challenger, target, selectedFigure());
+    }
+
+    private Figure selectedFigure() {
+        return figures[Math.max(0, grelottineFigure.getSelectedItemPosition())];
     }
 }
