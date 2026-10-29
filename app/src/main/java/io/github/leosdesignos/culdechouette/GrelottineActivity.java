@@ -9,8 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import io.github.leosdesignos.culdechouette.game.Figure;
 import io.github.leosdesignos.culdechouette.game.Game;
 import com.google.android.material.checkbox.MaterialCheckBox;
@@ -22,7 +20,7 @@ import java.util.List;
  * A player challenges the owner of the turn after their Néant: choice of the challenger,
  * possible Passe-Grelot to another target, then figure, stake and bets.
  */
-public class GrelottineActivity extends AppCompatActivity {
+public class GrelottineActivity extends BaseActivity {
 
     private static final String STATE_STEP = "step";
     private static final String STATE_CHALLENGER = "challenger";
@@ -193,7 +191,8 @@ public class GrelottineActivity extends AppCompatActivity {
         if (isFinishing()) {
             return;
         }
-        if (grelottineBet.getText().length() == 0) {
+        // Nothing to choose when no point can be put at stake
+        if (grelottineBet.getText().length() == 0 && maxStake() > 0) {
             Ui.toast(this, R.string.wrong_bet_input);
             return;
         }

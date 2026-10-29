@@ -2,21 +2,18 @@ package io.github.leosdesignos.culdechouette;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import io.github.leosdesignos.culdechouette.game.Game;
+import io.github.leosdesignos.culdechouette.game.Player;
 
 import java.util.ArrayList;
 
-public class StartActivity extends AppCompatActivity {
+public class StartActivity extends BaseActivity {
 
     /** Names to fill the list of players with, from the previous game. */
     static final String EXTRA_NAMES = "names";
@@ -32,18 +29,29 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start);
         store = GameStore.get(this);
+        Game game = store.game();
+        if (savedInstanceState == null && !getIntent().hasExtra(EXTRA_NAMES) && game != null && !game.isOver()) {
+            // Launched from the home screen with a game in progress
+            openGame();
+            return;
+        }
+        setContentView(R.layout.activity_start);
 
         playerNameEditText = findViewById(R.id.playerNameEditText);
         ListView playersListView = findViewById(R.id.playersListView);
         Button addPlayerButton = findViewById(R.id.addPlayerButton);
-        Button resumeButton = findViewById(R.id.resumeButton);
         startGameButton = findViewById(R.id.startGameButton);
 
         ArrayList<String> names = savedInstanceState != null
                 ? savedInstanceState.getStringArrayList(STATE_NAMES)
                 : getIntent().getStringArrayListExtra(EXTRA_NAMES);
+        if (names == null && game != null) {
+            names = new ArrayList<>();
+            for (Player player : game.players()) {
+                names.add(player.name());
+            }
+        }
         playersList = names != null ? names : new ArrayList<>();
         playersAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, playersList);
         playersListView.setAdapter(playersAdapter);
@@ -60,11 +68,7 @@ public class StartActivity extends AppCompatActivity {
             }
             return false;
         });
-        startGameButton.setOnClickListener(v -> startGame());
-        resumeButton.setOnClickListener(v -> openGame());
-
-        Game game = store.game();
-        resumeButton.setVisibility(game != null && !game.isOver() ? View.VISIBLE : View.GONE);
+        startGameButton.setOnClickListener(v -> createGame());
         checkStartGameButton();
     }
 
@@ -97,20 +101,6 @@ public class StartActivity extends AppCompatActivity {
         playersAdapter.notifyDataSetChanged();
         Ui.toast(this, R.string.player_removed, name);
         checkStartGameButton();
-    }
-
-    private void startGame() {
-        Game game = store.game();
-        if (game == null || game.isOver()) {
-            createGame();
-            return;
-        }
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.new_game)
-                .setMessage(R.string.replace_game_message)
-                .setPositiveButton(R.string.new_game, (dialog, which) -> createGame())
-                .setNegativeButton(android.R.string.cancel, null)
-                .show();
     }
 
     private void createGame() {

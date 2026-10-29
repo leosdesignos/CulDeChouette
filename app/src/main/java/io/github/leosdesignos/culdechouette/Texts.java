@@ -58,7 +58,7 @@ final class Texts {
             case CHOUETTE_VELUTE:
                 return context.getString(R.string.roll_chouette_velute, value);
             case SUITE:
-                return context.getString(R.string.roll_suite, value);
+                return context.getString(R.string.roll_suite, value - 2, value - 1, value);
             case SUITE_VELUTE:
                 return context.getString(R.string.roll_suite_velute);
             case CUL_DE_CHOUETTE:

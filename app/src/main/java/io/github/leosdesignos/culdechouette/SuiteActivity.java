@@ -6,15 +6,13 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Spinner;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import io.github.leosdesignos.culdechouette.game.Game;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /** Designates the last player who shouted "Grelotte ça picote !". */
-public class SuiteActivity extends AppCompatActivity {
+public class SuiteActivity extends BaseActivity {
 
     /** After ties, the loser loses 20 points, then 30... */
     private static final int MAX_MULTIPLIER = 9;

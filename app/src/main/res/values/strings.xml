@@ -12,16 +12,14 @@
     <string name="player_name">Nom du joueur</string>
     <string name="add_player">Ajouter un joueur</string>
     <string name="start">Commencer la partie</string>
-    <string name="resume_game">Reprendre la partie en cours</string>
     <string name="player_name_empty">Entrez un nom</string>
     <string name="player_name_taken">%1$s est déjà dans la partie</string>
     <string name="player_removed">%1$s retiré de la partie</string>
-    <string name="replace_game_message">Commencer une nouvelle partie effacera la partie en cours.</string>
     <string name="players_hint">Entrez les joueurs dans l\'ordre du jeu : le premier de la liste commence. Appui long sur un joueur pour le retirer.</string>
 
     <!-- Game -->
     <string name="playing">%1$s est en train de jouer</string>
-    <string name="playing_grelottine">%1$s relève le défi Grelottine de %2$s : %3$s</string>
+    <string name="playing_grelottine">%1$s relève le défi Grelottine lancé par %2$s : %3$s</string>
     <string name="civet_announced">Civet de %1$d sur %2$s annoncé</string>
     <string name="civet_expression">Civet de</string>
     <string name="grelottine_expression">Grelottine de</string>
@@ -43,6 +41,7 @@
     <string name="win_the_game">gagne la partie !</string>
     <string name="new_game">Nouvelle partie</string>
     <string name="new_game_message">La partie en cours sera perdue.</string>
+    <string name="cancel">Annuler</string>
     <string name="undo">Annuler la dernière action</string>
     <string name="undone">Dernière action annulée</string>
     <string name="wrong_dice_input">Entrez les trois dés (de 1 à 6)</string>
@@ -115,7 +114,7 @@
     <string name="roll_chouette">Chouette de %1$d</string>
     <string name="roll_velute">Velute de %1$d</string>
     <string name="roll_chouette_velute">Chouette Velute de %1$d</string>
-    <string name="roll_suite">Suite de %1$d</string>
+    <string name="roll_suite">Suite %1$d-%2$d-%3$d</string>
     <string name="roll_suite_velute">Suite Velute (1-2-3)</string>
     <string name="roll_cul_de_chouette">Cul de Chouette de %1$d</string>
     <string name="roll_cul_de_chouette_sirote">Cul de Chouette de %1$d siroté</string>
@@ -133,12 +132,12 @@
     <string name="event_chouette_velute_claimed">%1$s remporte la Chouette Velute (%2$s)</string>
     <string name="event_chouette_velute_unclaimed">Personne ne remporte la Chouette Velute</string>
     <string name="event_suite_lost">%1$s perd la Suite (%2$s)</string>
-    <string name="event_soufflette_won">%1$s réussit la Soufflette de %3$s en %2$s : %1$s %4$s, %3$s %5$s</string>
+    <string name="event_soufflette_won">%1$s réussit la Soufflette lancée par %3$s en %2$s : %1$s %4$s, %3$s %5$s</string>
     <plurals name="throw_count">
         <item quantity="one">%d coup</item>
         <item quantity="other">%d coups</item>
     </plurals>
-    <string name="event_soufflette_lost">%1$s rate la Soufflette de %2$s : %1$s %3$s, %2$s %4$s</string>
+    <string name="event_soufflette_lost">%1$s rate la Soufflette lancée par %2$s : %1$s %3$s, %2$s %4$s</string>
     <string name="event_civet_announced">%1$s annonce un Civet de %2$d sur %3$s</string>
     <string name="event_civet_won">%1$s réussit son Civet sur %2$s (%3$s)</string>
     <string name="event_civet_lost">%1$s rate son Civet sur %2$s (%3$s)</string>
@@ -147,9 +146,9 @@
     <string name="event_passe_grelot_gained">%1$s gagne un Passe-Grelot</string>
     <string name="event_grelottine_challenge">%1$s défie %2$s : Grelottine de %3$d sur %4$s</string>
     <string name="event_passe_grelot_used">%1$s fait Passe-Grelot et passe le défi à %2$s</string>
-    <string name="event_grelottine_cancelled">%1$s fait Passe-Grelot : le défi de %2$s est annulé</string>
-    <string name="event_grelottine_won">%1$s réussit le défi de %2$s : %1$s %3$s, %2$s %4$s</string>
-    <string name="event_grelottine_lost">%1$s échoue au défi de %2$s : %1$s %3$s, %2$s %4$s</string>
+    <string name="event_grelottine_cancelled">%1$s fait Passe-Grelot : le défi lancé par %2$s est annulé</string>
+    <string name="event_grelottine_won">%1$s réussit le défi lancé par %2$s : %1$s %3$s, %2$s %4$s</string>
+    <string name="event_grelottine_lost">%1$s échoue au défi lancé par %2$s : %1$s %3$s, %2$s %4$s</string>
     <string name="event_grelottine_bet_won">%1$s gagne son pari sur le défi (%2$s)</string>
     <string name="event_grelottine_bet_lost">%1$s perd son pari sur le défi (%2$s)</string>
     <string name="event_bevue_no_civet">Bévue ! %1$s n\'a pas de Civet (%2$s)</string>

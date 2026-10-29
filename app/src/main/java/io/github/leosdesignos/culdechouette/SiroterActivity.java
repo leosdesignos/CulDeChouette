@@ -10,8 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import io.github.leosdesignos.culdechouette.game.Game;
 
 import java.util.ArrayList;
@@ -19,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /** The roller throws one die to turn their Chouette into a Cul de Chouette, the others bet on it. */
-public class SiroterActivity extends AppCompatActivity {
+public class SiroterActivity extends BaseActivity {
 
     private static final String STATE_BETS = "bets";
     private static final String STATE_LOCKED = "betsLocked";
@@ -103,6 +101,14 @@ public class SiroterActivity extends AppCompatActivity {
                 updateResult();
             }
         });
+        if (bettors.isEmpty()) {
+            // Nobody can bet: straight to the die
+            betsLocked = true;
+            validateBetButton.setVisibility(View.GONE);
+            if (savedInstanceState == null) {
+                diceEditText.post(diceEditText::focus);
+            }
+        }
         applyLock();
         updateResult();
     }

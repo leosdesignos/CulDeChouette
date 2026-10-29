@@ -89,6 +89,35 @@ public class ScreensTest {
     }
 
     @Test
+    public void appOpensTheGameInProgress() {
+        newGame("Arthur", "Bohort");
+
+        StartActivity activity = Robolectric.buildActivity(StartActivity.class).setup().get();
+
+        assertTrue(activity.isFinishing());
+        assertNextActivity(activity, MainActivity.class);
+    }
+
+    @Test
+    public void startScreenAfterAFinishedGameKeepsThePlayers() {
+        newGame("Arthur", "Bohort");
+        store().run(game -> {
+            for (int turn = 0; turn < 7; turn++) {
+                game.roll(6, 6, 6);
+                game.endTurn();
+            }
+        });
+        assertTrue(store().game().isOver());
+
+        StartActivity activity = Robolectric.buildActivity(StartActivity.class).setup().get();
+
+        assertFalse(activity.isFinishing());
+        ListView players = activity.findViewById(R.id.playersListView);
+        assertEquals(2, players.getAdapter().getCount());
+        assertTrue(activity.findViewById(R.id.startGameButton).isEnabled());
+    }
+
+    @Test
     public void playsATurnAndSurvivesRecreation() {
         newGame("Arthur", "Bohort");
         ActivityController<MainActivity> controller = Robolectric.buildActivity(MainActivity.class).setup();

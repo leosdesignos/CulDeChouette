@@ -7,14 +7,12 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import io.github.leosdesignos.culdechouette.game.Game;
 
 import java.util.Arrays;
 
 /** The roller of a 4-2-1 can challenge another player to make it too, in three throws at most. */
-public class SouffletteActivity extends AppCompatActivity {
+public class SouffletteActivity extends BaseActivity {
 
     private GameStore store;
     private Ui.PlayerSpinner playerSpinner;

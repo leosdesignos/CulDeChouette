@@ -6,6 +6,8 @@
     <color name="secondaryColorVariant">#476C74</color>
     <!-- Text on the background, contrast ratio of 7:1 -->
     <color name="textColor">#3B2210</color>
+    <!-- Selected item of a list, under the text color -->
+    <color name="selectedItemColor">#E8D3C0</color>
     <!-- Text on the primary color, contrast ratio of 5.8:1 -->
     <color name="onPrimaryColor">#FAFEFF</color>
 

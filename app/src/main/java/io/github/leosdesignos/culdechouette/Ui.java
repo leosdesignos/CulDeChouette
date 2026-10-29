@@ -24,7 +24,7 @@ final class Ui {
 
     static ArrayAdapter<String> adapter(Context context, List<String> labels) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, labels);
-        adapter.setDropDownViewResource(android.R.layout.simple_list_item_activated_1);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         return adapter;
     }
 

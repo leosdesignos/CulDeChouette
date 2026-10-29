@@ -12,7 +12,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import io.github.leosdesignos.culdechouette.game.Figure;
 import io.github.leosdesignos.culdechouette.game.Game;
@@ -26,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** The game screen. Everything shown is derived from the game, so it survives being recreated. */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private static final String STATE_CIVET_OPEN = "civetOpen";
     private static final String STATE_ROLL_KEY = "rollKey";
@@ -190,6 +192,10 @@ public class MainActivity extends AppCompatActivity {
             dice3EditText.setText("");
             civetOpen = false;
             civetBet.setText("");
+            // Ready to type the dice of the new player
+            if (game.canRoll()) {
+                dice1EditText.post(dice1EditText::focus);
+            }
         }
 
         statusText.setText(grelottine == null
@@ -315,9 +321,6 @@ public class MainActivity extends AppCompatActivity {
         }
         store.run(Game::endTurn);
         render();
-        if (!game().isOver()) {
-            dice1EditText.focus();
-        }
     }
 
     private void toggleCivet() {
@@ -351,12 +354,17 @@ public class MainActivity extends AppCompatActivity {
             newGame();
             return;
         }
-        new AlertDialog.Builder(this)
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.new_game)
                 .setMessage(R.string.new_game_message)
-                .setPositiveButton(R.string.new_game, (dialog, which) -> newGame())
-                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(R.string.new_game, (d, which) -> newGame())
+                .setNegativeButton(R.string.cancel, null)
                 .show();
+        // The dialog style imposes its own font on the message
+        TextView message = dialog.findViewById(android.R.id.message);
+        if (message != null) {
+            message.setTypeface(ResourcesCompat.getFont(this, R.font.augusta));
+        }
     }
 
     private void newGame() {

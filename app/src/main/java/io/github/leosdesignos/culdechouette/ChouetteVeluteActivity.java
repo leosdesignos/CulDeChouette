@@ -3,12 +3,10 @@ package io.github.leosdesignos.culdechouette;
 import android.os.Bundle;
 import android.widget.Spinner;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import io.github.leosdesignos.culdechouette.game.Game;
 
 /** Designates the first player who shouted "Pas mou le caillou !", who wins the Chouette Velute. */
-public class ChouetteVeluteActivity extends AppCompatActivity {
+public class ChouetteVeluteActivity extends BaseActivity {
 
     private GameStore store;
     private Ui.PlayerSpinner playerSpinner;

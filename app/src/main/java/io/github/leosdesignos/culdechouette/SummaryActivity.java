@@ -9,8 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import io.github.leosdesignos.culdechouette.game.Game;
 import io.github.leosdesignos.culdechouette.game.GameEvent;
 import io.github.leosdesignos.culdechouette.game.Player;
@@ -21,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** The game turn by turn, latest first, with the scores and tokens of each player after every turn. */
-public class SummaryActivity extends AppCompatActivity {
+public class SummaryActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

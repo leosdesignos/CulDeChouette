@@ -1,6 +1,6 @@
 <resources>
-    <!-- Base application theme. -->
-    <style name="Theme.CulDeChouette" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <!-- Base application theme. Each screen has its own app bar, see activity_frame. -->
+    <style name="Theme.CulDeChouette" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryVariant">@color/primaryColorVariant</item>
@@ -12,17 +12,25 @@
         <item name="colorControlActivated">@color/primaryColorVariant</item>
 
         <item name="android:windowBackground">@color/backgroundColor</item>
+        <!-- Up to Android 14, above the app bar -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
 
         <item name="android:fontFamily">@font/augusta</item>
 
         <item name="android:textSize">@dimen/text_size_normal</item>
-        <!-- The action bar keeps light text through its own theme overlay -->
+        <!-- Plain texts would otherwise be 54 % black: 3.7:1 contrast on the background -->
+        <item name="android:textColor">@color/textColor</item>
         <item name="android:textColorPrimary">@color/textColor</item>
         <item name="android:textColorSecondary">@color/textColor</item>
         <item name="android:editTextColor">@color/textColor</item>
 
         <item name="android:spinnerStyle">@style/SpinnerStyle</item>
+    </style>
+
+    <style name="TextAppearance.CulDeChouette.Toolbar" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:fontFamily">@font/augusta</item>
+        <item name="fontFamily">@font/augusta</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
     </style>
 
     <style name="SpinnerStyle" parent="Widget.AppCompat.Spinner">
